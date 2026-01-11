@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -49,7 +67,7 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:block">
-            <button className="px-6 py-2.5 border-[#478100] border text-black text-[12px] font-medium rounded-lg hover:bg-[#5a9e00]">
+            <button className="px-6 py-2.5 border-[#478100] border text-black text-[12px] font-medium rounded-lg hover:bg-[#478100] hover:text-white transition-all duration-300">
               Join Us
             </button>
           </div>
@@ -78,9 +96,9 @@ export default function Navbar() {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
-            <div className="w-32">
+            <div className="w-20">
               <img 
-                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767863353/Frame_2147226376_nweddh.png" 
+                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768088037/Frame_2147226388_qcr7fp.png" 
                 alt="RWU Inc. Logo" 
                 className="w-full h-auto" 
               />
@@ -124,24 +142,12 @@ export default function Navbar() {
               className="w-full px-6 py-4 bg-gradient-to-r from-[#478100] to-[#5a9e00] text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               onClick={() => setIsOpen(false)}
             >
-              Hire Us
+              Join Us
             </button>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </nav>
   );
 }
+
