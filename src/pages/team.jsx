@@ -1,24 +1,5 @@
-import React from 'react';
 import CTABannerSection from '../component/cta';
 import Footer from '../component/footer';
-
-const stats = [
-    {
-        value: "15,000+",
-        label: "Employees worldwide",
-        image: "https://res.cloudinary.com/do4b0rrte/image/upload/v1767958054/undraw_handshake-deal_nwk6-removebg-preview_sdbof4.png"
-    },
-    {
-        value: "50+",
-        label: "Global offices",
-        image: "https://res.cloudinary.com/do4b0rrte/image/upload/v1767958061/undraw_agreement_ftet-removebg-preview_zrdcri.png"
-    },
-    {
-        value: "120+",
-        label: "Countries of operation",
-        image: "https://res.cloudinary.com/do4b0rrte/image/upload/v1767958043/undraw_my-resume_etai_vbukmp.svg"
-    },
-];
 
 export default function TeamSection() {
     return (
@@ -61,38 +42,56 @@ export default function TeamSection() {
                     </div>
                 </div>
             </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-             <div className="mb-16">
-                    <h2 className="text-2xl m font-bold text-black mb-8">
-                        Awards & Recognition
-                    </h2>
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div className="mb-16">
+        <h2 className="text-2xl font-bold text-black mb-8">
+            Awards & Recognition
+        </h2>
 
-                    <p className="text-base text-gray-700 leading-relaxed mb-8">
-                        RWU Inc. is proud to have been recognized by leading organizations for our commitment to ethical business practices, 
-                        outstanding company culture, innovative workplace solutions, and being a trusted name in the global industry.
-                    </p>
-
-                    <div className="flex flex-wrap items-center justify-center gap-8 md:gap-56 py-8">
-                        <div className="w-24 h-24 md:w-40 md:h-40 flex items-center justify-center">
-                            <img 
-                                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958054/undraw_handshake-deal_nwk6-removebg-preview_sdbof4.png" 
-                                alt="Best Workplace Award"
-                                className="w-full h-full object-contain"
-                            />
+        <p className="text-base text-gray-700 leading-relaxed mb-8">
+            RWU Inc. is proud to have been recognized by leading organizations for our commitment to ethical business practices, 
+            outstanding company culture, innovative workplace solutions, and being a trusted name in the global industry.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101150/Award_Winner_crthah.png" 
+                                    alt="Best Workplace Award"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-700">Best Workplace 2025</p>
                         </div>
-                        <div className="w-24 h-24 md:w-40 md:h-40 flex items-center justify-center">
-                            <img 
-                                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958061/undraw_agreement_ftet-removebg-preview_zrdcri.png" 
-                                alt="Top Company Culture"
-                                className="w-full h-full object-contain"
-                            />
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101150/Award_Winner_Bold_gce7uj.gif" 
+                                    alt="Top Company Culture"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-700">Top Company Culture</p>
                         </div>
-                        <div className="w-24 h-24 md:w-40 md:h-40 flex items-center justify-center">
-                            <img 
-                                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958043/undraw_my-resume_etai_vbukmp.svg" 
-                                alt="Industry Excellence"
-                                className="w-full h-full object-contain"
-                            />
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101151/work_place_ezcudr.png" 
+                                    alt="Industry Excellence"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-700">Industry Excellence</p>
+                        </div>
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101151/Company_Culture_edm2rt.png" 
+                                    alt="Global Employer Award"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-700">Global Employer Award</p>
                         </div>
                     </div>
                 </div>

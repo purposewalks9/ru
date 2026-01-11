@@ -22,15 +22,19 @@ export default function Footer() {
   return (
     <footer className="bg-gray-50 text-black pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Contact Info */}
         <div className="grid md:grid-cols-4 gap-8 mb-12">
-          {/* Company Info */}
           <div>
-            <h3 className="text-black font-bold text-xl mb-4">RWU Inc.</h3>
-            <p className="text-sm mb-4 leading-relaxed">
+           <div className="md:w-20 w-20 h-auto">
+            <img 
+              src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768088037/Frame_2147226388_qcr7fp.png" 
+              alt="RWU Inc. Logo" 
+              className="w-full h-auto object-cover" 
+            />
+          </div>
+            <p className="md:text-sm text-[14px] mb-4 leading-relaxed p-4">
               Connecting talented professionals with remote opportunities worldwide.
             </p>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-4 md:text-sm text-gray-700 text-[12px] px-4">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-black" />
                 <span>Remote First • Global Team</span>
@@ -46,11 +50,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 1: Find Jobs */}
           <div>
             <button
               onClick={() => toggleSection('jobs')}
-              className="flex justify-between items-center w-full mb-4"
+              className="flex justify-between items-center w-full px-4  md:cursor-default"
             >
               <h3 className="font-semibold text-gray-800 text-sm md:text-base">
                 Find Jobs
@@ -59,31 +62,26 @@ export default function Footer() {
                 {openSection === 'jobs' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </span>
             </button>
-            <ul className={`space-y-2.5 text-gray-800 text-sm ${openSection === 'jobs' ? 'block' : 'hidden'} md:block`}>
+            <ul className={`space-y-3 text-gray-800 md:text-sm text-[12px] transition-all duration-300 overflow-hidden px-4 mt-4 ${openSection === 'jobs' ? 'max-h-96 mb-4' : 'max-h-0'} md:max-h-none md:block`}>
               <li><a href="#" className="hover:text-gray-800 transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Remote Jobs
               </a></li>
               <li><a href="#" className="hover:text-gray-800 transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Entry Level
               </a></li>
               <li><a href="#" className="hover:text-gray-800 transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Part-Time
               </a></li>
               <li><a href="#" className="hover:text-gray-800 transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Freelance
               </a></li>
             </ul>
           </div>
 
-          {/* Column 2: About */}
           <div>
             <button
               onClick={() => toggleSection('about')}
-              className="flex justify-between items-center w-full mb-4"
+              className="flex justify-between items-center w-full px-4 md:cursor-default"
             >
               <h3 className="font-semibold text-black text-sm md:text-base">
                 Company
@@ -92,31 +90,26 @@ export default function Footer() {
                 {openSection === 'about' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </span>
             </button>
-            <ul className={`space-y-2.5 text-gray-800 text-sm ${openSection === 'about' ? 'block' : 'hidden'} md:block`}>
+            <ul className={`space-y-2.5 text-gray-800 md:text-sm text-[12px] transition-all duration-300 overflow-hidden px-4 mt-4 ${openSection === 'about' ? 'max-h-96 mb-4' : 'max-h-0'} md:max-h-none md:block`}>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 About Us
               </a></li>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Careers
               </a></li>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Contact
               </a></li>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Blog
               </a></li>
             </ul>
           </div>
 
-          {/* Column 3: Resources */}
           <div>
             <button
               onClick={() => toggleSection('resources')}
-              className="flex justify-between items-center w-full mb-4"
+              className="flex justify-between items-center w-full px-4  md:cursor-default"
             >
               <h3 className="font-semibold text-black text-sm md:text-base">
                 Resources
@@ -125,31 +118,25 @@ export default function Footer() {
                 {openSection === 'resources' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </span>
             </button>
-            <ul className={`space-y-2.5 text-gray-800 text-sm ${openSection === 'resources' ? 'block' : 'hidden'} md:block`}>
+            <ul className={`space-y-2.5 text-gray-800 md:text-sm text-[12px] transition-all duration-300 overflow-hidden px-4 mt-4 ${openSection === 'resources' ? 'max-h-96 mb-4' : 'max-h-0'} md:max-h-none md:block`}>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Resume Guide
               </a></li>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Interview Tips
               </a></li>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Salary Calculator
               </a></li>
               <li><a href="#" className="hover:text-black transition-colors flex items-center gap-2 group">
-                <div className="w-1 h-1 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 Career Advice
               </a></li>
             </ul>
           </div>
         </div>
 
-        {/* Social Media & CTA */}
-        <div className="border-t border-gray-800 pt-8 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            {/* Newsletter */}
+        <div className=" mb-8">
+          <div className="flex flex-col md:flex-row md:justify-between justify-center items-start px-4 gap-8">
             <div className="flex-1 max-w-md">
               <h4 className="font-semibold text-black text-sm mb-3">Stay Updated</h4>
               <div className="flex gap-2">
@@ -174,18 +161,10 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Footer */}
         <div className="border-t border-gray-800 pt-6 text-gray-800 ">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* Copyright */}
             <div className="text-sm text-gray-800 ">
               © 2023 RWU Inc. All rights reserved.
-            </div>
-
-
-            {/* Disclaimer */}
-            <div className="text-xs text-gray-800  text-center md:text-right max-w-md">
-              *All company names and logos are trademarks of their respective owners.
             </div>
           </div>
         </div>

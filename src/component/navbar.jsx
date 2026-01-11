@@ -39,7 +39,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-md fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
-          <div className="md:w-20 w-20 h-auto">
+          <div className="md:w-20 w-20 h-auto md:ml-0 ml-4">
             <img 
               src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768088037/Frame_2147226388_qcr7fp.png" 
               alt="RWU Inc. Logo" 

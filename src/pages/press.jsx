@@ -1,4 +1,6 @@
 import React from 'react';
+import CTABannerSection from '../component/cta';
+import Footer from '../component/footer';
 
 const featuredArticle = {
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80",
@@ -30,14 +32,14 @@ const articles = [
 
 export default function PressAwards() {
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-gray-50 min-h-screen">
             <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 bg-gray-50">
                     <div className="flex md:flex-row lg:gap-32 flex-col xl:px-0 lg:px-0 px-8 sm:px-16 md:px-32 xl:pt-48 lg:pt-48 pt-32 items-center justify-center">
                         <div className='lg:w-300 md:w-160 w-full'>
                             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                                 <span className="relative inline-block">
-                                    Our Team
+                                    Press & Awards
                                     <svg
                                         className="absolute -bottom-2 left-0 w-full"
                                         height="12"
@@ -54,24 +56,26 @@ export default function PressAwards() {
                                         />
                                     </svg>
                                 </span>
-                                {' '} at RWU Inc.
                             </h1>
 
                             <p className="md:text-[16px] lg:text-[16px] text-[14px] text-gray-700 mb-6 leading-relaxed">
-                                <span className="font-bold">Our international team is comprised of talented, dedicated, and innovative professionals who share a passion for excellence and employee development.</span> As we support our workforce across 120+ countries and facilitate internal career growth, it's essential that we maintain our core values of integrity, collaboration, and continuous improvement at the heart of everything we do.
+                                <span className="font-bold">Discover how RWU Inc. is making headlines worldwide.</span> From groundbreaking internal career development programs to recognition as a top global employer, we're proud to share our achievements and the stories that showcase our commitment to employee excellence and innovation.
                             </p>
 
                             <p className="md:text-[16px] lg:text-[16px] text-[14px] text-gray-700 leading-relaxed">
-                                We work with dedication and purpose, value work-life balance, believe integrity is paramount, and always prioritize our people. Our team members are empowered to innovate, collaborate across borders, and contribute to a culture where everyone can thrive.
+                                Our dedication to creating meaningful career opportunities and fostering a world-class workplace culture has earned us recognition from leading publications and industry organizations across the globe.
                             </p>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div className="bg-white rounded-2xl  overflow-hidden mb-16  border-gray-100">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">
+                    Featured Articles
+                </h2>
+                
+                <div className="bg-white rounded-2xl overflow-hidden mb-16 border-gray-100">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="relative h-64 lg:h-auto">
                             <img
@@ -145,41 +149,41 @@ export default function PressAwards() {
                         Awards & Recognition
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-                        <div className="text-center">
-                            <div className="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                                <img
-                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958054/undraw_handshake-deal_nwk6-removebg-preview_sdbof4.png"
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101150/Award_Winner_crthah.png" 
                                     alt="Best Workplace Award"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
                             <p className="text-sm font-semibold text-gray-700">Best Workplace 2025</p>
                         </div>
-                        <div className="text-center">
-                            <div className="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                                <img
-                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958061/undraw_agreement_ftet-removebg-preview_zrdcri.png"
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101150/Award_Winner_Bold_gce7uj.gif" 
                                     alt="Top Company Culture"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
                             <p className="text-sm font-semibold text-gray-700">Top Company Culture</p>
                         </div>
-                        <div className="text-center">
-                            <div className="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                                <img
-                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958043/undraw_my-resume_etai_vbukmp.svg"
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101151/work_place_ezcudr.png" 
                                     alt="Industry Excellence"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
                             <p className="text-sm font-semibold text-gray-700">Industry Excellence</p>
                         </div>
-                        <div className="text-center">
-                            <div className="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                                <img
-                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767958054/undraw_handshake-deal_nwk6-removebg-preview_sdbof4.png"
-                                    alt="Global Employer"
+                        <div className="text-center group">
+                            <div className="w-40 h-40 mx-auto mb-4 flex items-center justify-center  p-4">
+                                <img 
+                                    src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768101151/Company_Culture_edm2rt.png" 
+                                    alt="Global Employer Award"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
@@ -187,7 +191,12 @@ export default function PressAwards() {
                         </div>
                     </div>
                 </div>
+                
             </div>
+             <div className=" mt-24">
+                  <CTABannerSection />
+                <Footer />
+                </div>
         </div>
     );
 }
