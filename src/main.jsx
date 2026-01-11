@@ -1,5 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./component/ScrollToTop";
 import App from "./App";
 
 createRoot(document.getElementById("root")).render(
