@@ -1,28 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Star } from 'lucide-react';
-import Ctasection from '../component/cta';
-import Footer from '../component/footer';
+import { supabase } from '../lib/supabase';
+import Ctasection from '../components/cta';
+import Footer from '../components/footer';
 
 const Stories = () => {
     const [expandedStory, setExpandedStory] = useState(null);
+    const [storyData, setStoryData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const stories = [
-        {
-            id: 1,
-            image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-            preview: "Joining Rwu Inc. gave me the flexibility I needed while still feeling connected to a strong, professional team.",
-            fullStory: "Joining Rwu Inc. gave me the flexibility I needed while still feeling connected to a strong, professional team. The company culture encourages ownership, growth, and balance. From onboarding to day-to-day collaboration, I felt supported and trusted to do meaningful work.",
-            color: "border-orange-500"
-        },
-        {
-            id: 2,
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-            preview: "I was looking for a company where my skills could grow and my effort would be valued. Rwu Inc. delivered on both.",
-            fullStory: "I was looking for a company where my skills could grow and my effort would be valued. Rwu Inc. delivered on both. The work environment promotes learning, collaboration, and clear career progression. Being part of a global team has broadened my perspective and strengthened my confidence.",
-            color: "border-blue-500"
+    useEffect(() => {
+        fetchStoryData();
+    }, []);
+
+    const fetchStoryData = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('stories')
+                .select('*')
+                .limit(1)
+                .maybeSingle();
+
+            if (error) throw error;
+            if (data) setStoryData(data);
+        } catch (error) {
+            console.error('Error fetching story:', error);
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
 
+    // Keep original testimonials as they are
     const testimonials = [
         {
             name: "Ashley M.",
@@ -53,17 +61,18 @@ const Stories = () => {
             role: "Healthcare Operations Coordinator",
             avatar: "https://i.pravatar.cc/150?img=12",
             platform: "sitejabber",
-            review: "Rwu Inc. stands out for its structure, transparency, and respect for employees’ time.",
+            review: "Rwu Inc. stands out for its structure, transparency, and respect for employees' time.",
             rating: 5
         },
-         {
+        {
             name: "Becka A.",
             role: "Digital Support Analyst",
             avatar: "https://i.pravatar.cc/150?img=10",
             platform: "sitejabber",
             review: "The leadership team genuinely listens, and the company culture encourages continuous improvement.",
             rating: 5
-        }, {
+        },
+        {
             name: "Becka A.",
             role: "Digital Support Analyst",
             avatar: "https://i.pravatar.cc/150?img=10",
@@ -87,6 +96,15 @@ const Stories = () => {
             ))}
         </div>
     );
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-gray-500">Loading...</div>
+            </div>
+        );
+    }
+
     return (
         <div className="relative overflow-hidden bg-gray-50">
             <div className="bg-gray-50">
@@ -94,7 +112,7 @@ const Stories = () => {
                     <div className="flex flex-col md:flex-row gap-16 pt-32 m-12 items-center justify-center">
                         <div className='lg:w-300 md:w-160 w-80'>
                             <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                                RWU Inc.
+                                {storyData?.pageheading || 'RWU Inc.'}
                                 {' '}
                                 <span className="relative inline-block">
                                     Success Stories
@@ -117,24 +135,17 @@ const Stories = () => {
                             </h1>
 
                             <p className="md:text-[16px] lg:text-[16px] text-[14px] text-gray-700 mb-6 leading-relaxed relative z-10">
-                                These are the stories of{' '}
-                                <span className="font-bold">
-                                    RWU team members worldwide who advanced their careers through internal opportunities.
-                                </span>{' '}
-                                Their backgrounds and skills may differ, but they had the same goal: to find a role that fits their aspirations and leverages their talents. And with RWU Inc.'s internal job portal, they found exactly that while growing within our organization.
+                                {storyData?.pagetext || 'These are the stories of RWU team members worldwide who advanced their careers through internal opportunities. Their backgrounds and skills may differ, but they had the same goal: to find a role that fits their aspirations and leverages their talents. And with RWU Inc.\'s internal job portal, they found exactly that while growing within our organization.'}
                             </p>
                         </div>
 
-
-
                         <div className="w-160 h-auto hidden lg:flex">
                             <img
-                                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1767968949/reviewbanner_miswat.png"
+                                src={storyData?.pageimage || "https://res.cloudinary.com/do4b0rrte/image/upload/v1767968949/reviewbanner_miswat.png"}
                                 alt="RWU team member working remotely"
                                 className="rounded-full w-full object-cover"
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -152,40 +163,58 @@ const Stories = () => {
 
                     <div className="grid lg:grid-cols-2 gap-12 mb-16">
                         <div className="space-y-10">
-                            {stories.map((story) => (
-                                <div key={story.id} className="flex gap-4">
-                                    <div className={`w-2 ${story.color}`}></div>
+                            {/* Card 1 */}
+                            {storyData?.card1description && (
+                                <div className="flex gap-4">
+                                    <div className="w-2 border-orange-500"></div>
                                     <div className="flex gap-4">
-                                        <img
-                                            src={story.image}
-                                            alt="Rwu Inc. employee"
-                                            className="w-32 h-32 object-cover rounded"
-                                        />
+                                        {storyData?.card1pic && (
+                                            <img
+                                                src={storyData.card1pic}
+                                                alt="Rwu Inc. employee"
+                                                className="w-32 h-32 object-cover rounded"
+                                            />
+                                        )}
                                         <div>
                                             <p className="text-gray-700 text-sm mb-3">
-                                                {expandedStory === story.id ? story.fullStory : story.preview}
+                                                {storyData.card1description}
                                             </p>
-                                            <button
-                                                onClick={() => toggleStory(story.id)}
-                                                className="flex items-center gap-2 font-semibold text-sm"
-                                            >
-                                                {expandedStory === story.id ? 'Read Less' : 'Read More'}
-                                                {expandedStory === story.id ? <ChevronUp /> : <ChevronDown />}
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )}
+
+                            {/* Card 2 */}
+                            {storyData?.card2description && (
+                                <div className="flex gap-4">
+                                    <div className="w-2 border-blue-500"></div>
+                                    <div className="flex gap-4">
+                                        {storyData?.card2pic && (
+                                            <img
+                                                src={storyData.card2pic}
+                                                alt="Rwu Inc. employee"
+                                                className="w-32 h-32 object-cover rounded"
+                                            />
+                                        )}
+                                        <div>
+                                            <p className="text-gray-700 text-sm mb-3">
+                                                {storyData.card2description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
+                        {/* Card 3 - Quote Section */}
                         <div className="p-8 border-l-2 border-gray-200 flex flex-col justify-center">
                             <div className="text-6xl text-[#498100] mb-6">"</div>
                             <blockquote className="text-lg text-gray-800 mb-6">
-                                Working at Rwu Inc. has been both professionally rewarding and personally fulfilling. The company genuinely invests in its people.
+                                {storyData?.card3description || 'Working at Rwu Inc. has been both professionally rewarding and personally fulfilling. The company genuinely invests in its people.'}
                             </blockquote>
                             <div className="border-t pt-4">
-                                <p className="font-semibold">Brian B.</p>
-                                <p className="text-sm text-gray-600">Operations Specialist</p>
+                                <p className="font-semibold">{storyData?.card3name || 'Brian B.'}</p>
+                                <p className="text-sm text-gray-600">{storyData?.card3status || 'Operations Specialist'}</p>
                             </div>
                         </div>
                     </div>
@@ -200,7 +229,7 @@ const Stories = () => {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {testimonials.map((testimonial, index) => (
-                            <div key={index} className="bg-white p-6 border  border-gray-200">
+                            <div key={index} className="bg-white p-6 border border-gray-200">
                                 <div className="flex justify-between mb-4">
                                     <div>
                                         <h3 className="font-bold">{testimonial.name}</h3>
@@ -219,7 +248,6 @@ const Stories = () => {
 
                                 <div className="flex justify-between items-center">
                                     {renderStars(testimonial.rating)}
-
                                 </div>
                             </div>
                         ))}

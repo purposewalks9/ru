@@ -1,6 +1,6 @@
 import React from 'react';
-import CTABannerSection from '../component/cta';
-import Footer from '../component/footer';
+import CTABannerSection from '../components/cta';
+import Footer from '../components/footer';
 
 const stats = [
     {

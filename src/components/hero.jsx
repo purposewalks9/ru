@@ -1,6 +1,37 @@
 import React from 'react';
+import  { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 export default function HeroSection() {
+  const [content, setContent] = useState({
+    hero_title: 'Grow Your Career',
+    hero_subtitle: 'Within RWU Inc.',
+    hero_description: 'Explore internal opportunities...',
+    stat_open_positions: '500+',
+    stat_locations: '120+',
+    stat_departments: '25+'
+  });
+  const [loading, setLoading] = useState(false);
+
+     useEffect(() => {
+    loadContent();
+  }, []);
+
+  const loadContent = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('home_content')
+      .select('*')
+      .single();
+    
+    if (data) {
+      setContent(data);
+    }
+    if (error) {
+      console.error('Error loading content:', error);
+    }
+    setLoading(false);
+  };
    
     return (
         <div className="pt-16 md:pt-24 pb-12 md:pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -9,33 +40,28 @@ export default function HeroSection() {
                     <div className="space-y-6 md:space-y-8 w-full lg:w-auto lg:max-w-2xl flex justify-center flex-col">
                         <div className="space-y-4">
                             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center lg:text-start font-bold leading-tight">
-                                Grow Your Career{' '}
-                                <span className="text-[#E9C236]">Within</span>{' '}
-                                <span className="text-[#478100]">
-                                    RWU Inc.
-                                </span>
+                                {content.hero_title}{' '}
+                                <span className="text-[#E9C236]">{content.hero_subtitle}</span>{' '}
+                               
                             </h1>
 
                             <p className="text-sm sm:text-base md:text-lg text-center lg:text-start text-gray-800 leading-relaxed">
-                                Explore <span className="font-bold">internal opportunities</span> across our global organization. 
-                                Whether you're seeking a new challenge, career advancement, or a role that better fits your expertise, 
-                                our internal job board connects <span className="font-bold">RWU Inc. employees</span> with positions 
-                                in departments and regions Worldwide
+                                {content.hero_description}
                             </p>
                         </div>
 
                         <div className="mt-6 space-y-8 md:space-y-12">
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                                 <div className="text-center p-3 md:p-4 bg-gray-50 rounded-lg">
-                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">500+</div>
+                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">{content.stat_open_positions}</div>
                                     <div className="text-xs md:text-sm text-gray-600">Open Positions</div>
                                 </div>
                                 <div className="text-center p-3 md:p-4 bg-gray-50 rounded-lg">
-                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">120+</div>
+                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">{content.stat_locations}</div>
                                     <div className="text-xs md:text-sm text-gray-600">Global Locations</div>
                                 </div>
                                 <div className="text-center p-3 md:p-4 bg-gray-50 rounded-lg col-span-2 md:col-span-1">
-                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">25+</div>
+                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">{content.stat_departments}</div>
                                     <div className="text-xs md:text-sm text-gray-600">Departments</div>
                                 </div>
                             </div>
@@ -60,7 +86,7 @@ export default function HeroSection() {
                     <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto py-8 md:py-12">
                         <div className="relative w-full h-auto mx-auto">
                             <img
-                                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768064057/banner_2_nexhkw.png"
+                                src={content.hero_image_url || '/images/career-hero.jpg'}
                                 alt="RWU Inc. team member exploring career opportunities"
                                 className="w-full h-auto object-cover rounded-lg"
                             />

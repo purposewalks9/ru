@@ -1,10 +1,11 @@
-import Benefits2 from "../component/benefit2";
-import CTABannerSection from "../component/cta";
-import JobCarousel from "../component/feature";
-import Footer from "../component/footer";
-import HeroSection from "../component/hero";
-import Benefits from "../component/benefit2";
-import TaskController from "../component/testimonial";
+
+import CTABannerSection from "../components/cta";
+import JobCarousel from "../components/feature";
+import Footer from "../components/footer";
+import HeroSection from "../components/hero";
+import Benefits from "../components/benefit2";
+import TaskController from "../components/testimonial";
+
 
 const Home = () => {
     return (

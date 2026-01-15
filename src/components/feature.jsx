@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, MapPin, ArrowLeft, X } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const JobCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedJob, setSelectedJob] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [applicationSubmitted, setApplicationSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -14,98 +17,25 @@ const JobCarousel = () => {
     coverLetter: ''
   });
 
-  const jobs = [
-    {
-      id: 1,
-      title: "Regional Operations Manager",
-      workType: "Hybrid",
-      timeType: "Full-Time",
-      location: "North America Region",
-      badge: "Priority",
-      salary: "75,000 - 95,000 USD Annually",
-      remoteLevel: "Hybrid",
-      benefits: "Comprehensive Health Coverage, Retirement Plan",
-      jobType: "Internal Transfer",
-      careerLevel: "Experienced",
-      department: "Operations",
-      description: "Lead operational excellence across North American facilities, ensuring efficiency and alignment with RWU Inc. global standards."
-    },
-    {
-      id: 2,
-      title: "Senior Technical Architect",
-      workType: "Remote",
-      timeType: "Full-Time",
-      location: "International",
-      badge: "Urgent",
-      salary: "105,000 - 140,000 USD Annually",
-      remoteLevel: "100% Remote",
-      benefits: "Health Coverage, Stock Options, Learning Budget",
-      jobType: "Internal Transfer",
-      careerLevel: "Senior",
-      department: "Technology Division",
-      description: "Architect enterprise-level solutions for RWU Inc.'s global infrastructure, collaborating with international teams."
-    },
-    {
-      id: 3,
-      title: "Global Marketing Coordinator",
-      workType: "Remote",
-      timeType: "Full-Time",
-      location: "Europe/Asia/Americas",
-      badge: "New Opening",
-      salary: "62,000 - 82,000 USD Annually",
-      remoteLevel: "100% Remote",
-      benefits: "Health Coverage, Professional Development",
-      jobType: "New Position",
-      careerLevel: "Mid-Level",
-      department: "Marketing & Communications",
-      description: "Coordinate marketing initiatives across RWU Inc.'s international markets, supporting brand consistency and growth."
-    },
-    {
-      id: 4,
-      title: "Lead Software Engineer",
-      workType: "Hybrid",
-      timeType: "Full-Time",
-      location: "APAC Headquarters",
-      badge: "High Priority",
-      salary: "125,000 - 165,000 USD Annually",
-      remoteLevel: "Hybrid",
-      benefits: "Full Benefits Package, Relocation Assistance",
-      jobType: "Internal Transfer",
-      careerLevel: "Senior",
-      department: "Engineering",
-      description: "Drive technical innovation for RWU Inc.'s core platforms, mentoring teams and establishing best practices."
-    },
-    {
-      id: 5,
-      title: "Client Relations Specialist",
-      workType: "Remote",
-      timeType: "Full-Time",
-      location: "Americas Region",
-      badge: "New Opening",
-      salary: "68,000 - 88,000 USD Annually",
-      remoteLevel: "100% Remote",
-      benefits: "Health Coverage, Performance Bonuses",
-      jobType: "New Position",
-      careerLevel: "Mid-Level",
-      department: "Client Services",
-      description: "Build and maintain strong relationships with key clients across the Americas, ensuring satisfaction and retention."
-    },
-    {
-      id: 6,
-      title: "Product Design Lead",
-      workType: "Remote",
-      timeType: "Full-Time",
-      location: "Global",
-      badge: "Featured",
-      salary: "95,000 - 125,000 USD Annually",
-      remoteLevel: "100% Remote",
-      benefits: "Health Coverage, Creative Development Fund",
-      jobType: "Internal Transfer",
-      careerLevel: "Senior",
-      department: "Product Design",
-      description: "Lead design strategy for RWU Inc.'s product portfolio, creating exceptional user experiences across platforms."
+  useEffect(() => {
+    loadJobs();
+  }, []);
+
+  const loadJobs = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (data) {
+      setJobs(data);
     }
-  ];
+    if (error) {
+      console.error('Error loading jobs:', error);
+    }
+    setLoading(false);
+  };
 
   const handleApplyClick = () => {
     setShowApplicationForm(true);
@@ -184,7 +114,7 @@ const JobCarousel = () => {
               <p className="text-sm text-gray-500 mt-4">Redirecting back to job details...</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <form onSubmit={handleFormSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -275,7 +205,7 @@ const JobCarousel = () => {
 
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4">
                 <button
-                  onClick={handleFormSubmit}
+                  type="submit"
                   className="flex-1 bg-[#478100] hover:bg-[#5a9e00] text-white font-bold text-base md:text-lg px-6 md:px-8 py-3 md:py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Submit Application
@@ -288,7 +218,7 @@ const JobCarousel = () => {
                   Cancel
                 </button>
               </div>
-            </div>
+            </form>
           )}
         </div>
       </div>
@@ -311,6 +241,17 @@ const JobCarousel = () => {
     (currentIndex + 1) * itemsPerPage
   );
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#478100] mx-auto"></div>
+          <p className="mt-4 text-xl text-gray-600 font-medium">Loading jobs...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (selectedJob) {
     return (
       <>
@@ -318,20 +259,20 @@ const JobCarousel = () => {
         
         <div className="bg-gray-50 py-8 md:py-12 min-h-screen">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className=" p-6 md:p-8 lg:p-10">
+            <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 lg:p-10">
               <button
                 onClick={() => setSelectedJob(null)}
                 className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-6"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                Back to Jobs
               </button>
 
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 mt-6">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                   {selectedJob.title}
                 </h1>
-                <span className="text-xs md:text-sm font-bold text-[#478100] bg-orange-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full whitespace-nowrap self-start">
+                <span className="text-xs md:text-sm font-bold text-orange-500 bg-orange-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full whitespace-nowrap self-start">
                   {selectedJob.badge}
                 </span>
               </div>
@@ -351,10 +292,6 @@ const JobCarousel = () => {
                     <span className="text-gray-900 text-sm md:text-base">{selectedJob.department}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Remote Level:</span>
-                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.remoteLevel}</span>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-2">
                     <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Location:</span>
                     <span className="text-gray-900 text-sm md:text-base">{selectedJob.location}</span>
                   </div>
@@ -363,20 +300,12 @@ const JobCarousel = () => {
                     <span className="text-gray-900 text-sm md:text-base">{selectedJob.salary}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Benefits:</span>
-                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.benefits}</span>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Position Type:</span>
-                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.jobType}</span>
+                    <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Work Type:</span>
+                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.work_type}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2">
                     <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Schedule:</span>
-                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.timeType}</span>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <span className="font-semibold text-gray-700 text-sm md:text-base min-w-[140px]">Career Level:</span>
-                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.careerLevel}</span>
+                    <span className="text-gray-900 text-sm md:text-base">{selectedJob.time_type}</span>
                   </div>
                 </div>
               </div>
@@ -413,14 +342,15 @@ const JobCarousel = () => {
         
         <div className="text-center mb-12">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Flexible & Online Jobs
+            Internal Job Opportunities
           </h1>
+          <p className="text-gray-600">Explore {jobs.length} open positions within RWU Inc.</p>
         </div>
 
         <div className="relative">
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 rounded-full p-3 mr-4 hover:bg-gray-50 transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 rounded-full p-3 bg-white shadow-lg hover:bg-gray-50 transition-colors"
             aria-label="Previous jobs"
           >
             <ChevronLeft className="w-6 h-6 text-gray-600" />
@@ -428,7 +358,7 @@ const JobCarousel = () => {
 
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 rounded-full p-3 hover:bg-gray-50 transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 rounded-full p-3 bg-white shadow-lg hover:bg-gray-50 transition-colors"
             aria-label="Next jobs"
           >
             <ChevronRight className="w-6 h-6 text-gray-600" />
@@ -439,10 +369,10 @@ const JobCarousel = () => {
               <div
                 key={job.id}
                 onClick={() => setSelectedJob(job)}
-                className="bg-white rounded-lg border-2 transition-all duration-300 p-6 border-gray-200 cursor-pointer transform hover:scale-105"
+                className="bg-white rounded-lg border-2 transition-all duration-300 p-6 border-gray-200 cursor-pointer transform hover:scale-105 hover:shadow-xl"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <span className="text-sm text-gray-600 font-medium">Today</span>
+                  <span className="text-sm text-gray-600 font-medium">New</span>
                   <span className="text-xs font-bold text-[#478100] bg-yellow-50 px-3 py-1 rounded-full">
                     {job.badge}
                   </span>
@@ -454,10 +384,10 @@ const JobCarousel = () => {
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className="text-xs font-medium text-gray-700 bg-gray-100 px-3 py-1.5 rounded-full">
-                    {job.workType}
+                    {job.work_type}
                   </span>
                   <span className="text-xs font-medium text-gray-700 bg-gray-100 px-3 py-1.5 rounded-full">
-                    {job.timeType}
+                    {job.time_type}
                   </span>
                 </div>
 
