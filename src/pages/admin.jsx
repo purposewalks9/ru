@@ -35,7 +35,7 @@ const AdminPortal = () => {
     const [lastSynced, setLastSynced] = useState(new Date().toLocaleTimeString());
 
     useEffect(() => {
-        setIsPageLoading(true);
+       
         const timer = setTimeout(() => setIsPageLoading(false), 800);
         return () => clearTimeout(timer);
     }, [activeTab]);
@@ -82,12 +82,7 @@ const AdminPortal = () => {
 
     const renderContentArea = () => {
         if (isPageLoading) {
-            return (
-                <div className="flex flex-col items-center justify-center h-[50vh]">
-                    <Loader2 className="animate-spin text-blue-600 mb-4" size={48} strokeWidth={2} />
-                    <p className="font-medium text-slate-700 text-base">Loading {activeTab}...</p>
-                </div>
-            );
+            
         }
 
         const renderManager = () => {

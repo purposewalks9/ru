@@ -112,7 +112,7 @@ const JobsManager = ({ showSuccess }) => {
         <div className="relative">
           <div className="w-16 h-16 border-4 border-[#478100]/20 border-t-[#478100] rounded-full animate-spin" />
         </div>
-        <p className="mt-4 text-slate-600 font-medium">Loading jobs...</p>
+        <p className="mt-4 text-slate-600 font-medium">Loading jobs data...</p>
       </div>
     );
   }

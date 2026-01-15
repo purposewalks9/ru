@@ -52,7 +52,7 @@ const Header = ({ activeTab, toggleSidebar }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-18 flex items-center justify-between px-8 bg-black backdrop-blur-xl border-b border-gray-900">
+    <header className="sticky top-0 z-30 h-18 flex items-center justify-between px-8 bg-white backdrop-blur-xl border-b border-gray-100">
       {/* Left Section */}
       <div className="flex items-center gap-6">
         <button
@@ -64,7 +64,7 @@ const Header = ({ activeTab, toggleSidebar }) => {
         </button>
 
         <div className="hidden lg:flex flex-col">
-          <h2 className="text-xl font-bold text-white tracking-tight leading-none">
+          <h2 className="text-xl font-bold text-black tracking-tight leading-none">
             Welcome Back
           </h2>
           <span className="text-slate-400 text-sm mt-1">
@@ -87,17 +87,17 @@ const Header = ({ activeTab, toggleSidebar }) => {
             `}
           >
             <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-[#E9C236] flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+              <div className="w-9 h-9 rounded-xl bg-[#E9C236] flex items-center justify-center text-black shadow-lg shadow-blue-500/20">
                 <User size={18} />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
             </div>
 
             <div className="hidden lg:block text-left">
-              <p className="text-sm font-bold text-white leading-none">
+              <p className="text-sm font-bold text-black leading-none">
                 {headerData?.name || 'Admin User'}
               </p>
-              <p className="text-[10px] text-white font-semibold mt-1">Super Administrator</p>
+              <p className="text-[10px] text-gray-700 font-semibold mt-1">Super Administrator</p>
             </div>
             <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 ${showProfileMenu ? 'rotate-180' : ''}`} />
           </button>

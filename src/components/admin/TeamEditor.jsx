@@ -91,9 +91,9 @@ const TeamManager = ({ showSuccess }) => {
 
   if (loading && !teamData) {
     return (
-      <div className="flex flex-col justify-center items-center py-20">
+     <div className="flex flex-col justify-center items-center py-20">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-[#E9C236]/20 border-t-[#E9C236] rounded-full animate-spin" />
+          <div className="w-16 h-16 border-4 border-[#478100]/20 border-t-[#478100] rounded-full animate-spin" />
         </div>
         <p className="mt-4 text-slate-600 font-medium">Loading team data...</p>
       </div>

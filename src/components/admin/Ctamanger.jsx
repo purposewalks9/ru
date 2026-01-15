@@ -76,8 +76,11 @@ const CTAManager = ({ showSuccess }) => {
 
   if (loading && !ctaData) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-slate-500">Loading CTA data...</div>
+   <div className="flex flex-col justify-center items-center py-20">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-[#478100]/20 border-t-[#478100] rounded-full animate-spin" />
+        </div>
+        <p className="mt-4 text-slate-600 font-medium">Loading Cta data...</p>
       </div>
     );
   }
@@ -112,9 +115,6 @@ const CTAManager = ({ showSuccess }) => {
       <div className="bg-white rounded-2xl p-6 border border-slate-200">
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#E9C236]/10 text-[#E9C236] flex items-center justify-center">
-              <Type size={24} />
-            </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900">CTA Banner Manager</h3>
               <p className="text-xs text-slate-500 mt-1">Edit call-to-action section</p>

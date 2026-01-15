@@ -41,7 +41,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
       title: "GROWTH",
       items: [
         { id: 'career', label: 'Career Path', icon: Briefcase },
-        { id: 'cta', label: 'Outreach', icon: Mail },
+        { id: 'cta', label: 'Cta', icon: Mail },
         { id: 'jobs', label: 'Jobs', icon: Info }
       ]
     }
@@ -49,7 +49,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
 
   const sidebarClasses = `
     fixed inset-y-0 left-0 z-50 w-72 
-    bg-black text-slate-300 
+    bg-white text-slate-300 
     transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
     border-r border-white/5
     flex flex-col
@@ -108,7 +108,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
                         group relative flex items-center w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200
                         ${isActive 
                           ? 'bg-[#478100]/10 text-[#E9C236] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' 
-                          : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}
+                          : 'text-black hover:bg-gray-500 hover:text-slate-200'}
                       `}
                     >
                       {/* Active Indicator Bar */}

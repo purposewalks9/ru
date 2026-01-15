@@ -82,8 +82,11 @@ const StoriesManager = ({ showSuccess }) => {
 
   if (!storyData) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="text-gray-500">Loading...</div>
+     <div className="flex flex-col justify-center items-center py-20">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-[#478100]/20 border-t-[#478100] rounded-full animate-spin" />
+        </div>
+        <p className="mt-4 text-slate-600 font-medium">Loading stories data ....</p>
       </div>
     );
   }
