@@ -42,7 +42,8 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
       items: [
         { id: 'career', label: 'Career Path', icon: Briefcase },
         { id: 'cta', label: 'Cta', icon: Mail },
-        { id: 'jobs', label: 'Jobs', icon: Info }
+        { id: 'jobs', label: 'Jobs', icon: Info },
+        { id: 'mail', label: 'Email', icon: Mail }
       ]
     }
   ];
@@ -108,7 +109,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
                         group relative flex items-center w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200
                         ${isActive 
                           ? 'bg-[#478100]/10 text-[#E9C236] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' 
-                          : 'text-black hover:bg-gray-500 hover:text-slate-200'}
+                          : 'text-black hover:bg-gray-200 hover:text-black'}
                       `}
                     >
                       {/* Active Indicator Bar */}

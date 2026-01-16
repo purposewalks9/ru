@@ -16,6 +16,7 @@ import {
   CloudUpload,
   RefreshCw
 } from 'lucide-react';
+import EmailManager from '../components/admin/Emailmanager.jsx';
 
 const PlaceholderEditor = ({ title }) => (
   <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
@@ -106,6 +107,8 @@ const AdminPortal = () => {
                 case 'footer':
                 case 'cta':
                     return <CTAManager showSuccess={showSuccess} />;
+                case 'mail':
+                     return <EmailManager showSuccess={showSuccess} />;
                 default:
                     return <PlaceholderEditor title={activeTab} />;
             }
