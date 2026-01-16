@@ -8,6 +8,12 @@ const CareerManager = ({ showSuccess }) => {
   const [careerData, setCareerData] = useState(null);
   const [faqs, setFaqs] = useState([]);
   const [error, setError] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState({ 
+    id: null, 
+    name: '', 
+    type: '' 
+  });
 
   useEffect(() => {
     fetchCareerData();
@@ -143,26 +149,26 @@ const CareerManager = ({ showSuccess }) => {
     }
   };
 
-  const handleDeleteFAQ = async (id) => {
-    if (!confirm('Are you sure you want to delete this FAQ?')) return;
-
+  const confirmDelete = async () => {
     setLoading(true);
     setError(null);
     try {
       const { error } = await supabase
         .from('faqs')
         .delete()
-        .eq('id', id);
+        .eq('id', itemToDelete.id);
 
       if (error) throw error;
 
-      showSuccess('FAQ deleted successfully!');
+      showSuccess(`${itemToDelete.name} deleted successfully!`);
       await fetchFAQs();
     } catch (error) {
       console.error('Error deleting FAQ:', error);
       setError(`Error deleting FAQ: ${error.message}`);
     } finally {
       setLoading(false);
+      setShowDeleteModal(false);
+      setItemToDelete({ id: null, name: '', type: '' });
     }
   };
 
@@ -197,6 +203,44 @@ const CareerManager = ({ showSuccess }) => {
 
   return (
     <div className="space-y-6">
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-gray-700/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800">
+                Confirm Delete
+              </h3>
+            </div>
+            
+            <div className="p-6">
+              <p className="text-gray-700 mb-6">
+                {`Are you sure you want to delete "${itemToDelete.name}"? This action cannot be undone.`}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setItemToDelete({ id: null, name: '', type: '' });
+                  }}
+                  className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors w-full sm:w-1/2 font-medium border border-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={loading}
+                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full sm:w-1/2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Deleting...' : 'Yes, Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 animate-in fade-in slide-in-from-top-2">
           <div className="flex items-start gap-3">
@@ -464,8 +508,15 @@ const CareerManager = ({ showSuccess }) => {
                             <Edit3 size={16} />
                           </button>
                           <button
-                            onClick={() => handleDeleteFAQ(faq.id)}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            onClick={() => {
+                              setItemToDelete({ 
+                                id: faq.id, 
+                                name: `FAQ #${index + 1}: ${faq.question}`, 
+                                type: 'faq' 
+                              });
+                              setShowDeleteModal(true);
+                            }}
+                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
                             <Trash2 size={16} />
                           </button>

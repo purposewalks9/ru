@@ -1,38 +1,63 @@
 import React from 'react';
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 export default function HeroSection() {
-  const [content, setContent] = useState({
-    hero_title: 'Grow Your Career',
-    hero_subtitle: 'Within RWU Inc.',
-    hero_description: 'Explore internal opportunities...',
-    stat_open_positions: '500+',
-    stat_locations: '120+',
-    stat_departments: '25+'
-  });
-  const [loading, setLoading] = useState(false);
+    const [content, setContent] = useState({
+        hero_title: 'Grow Your Career',
+        hero_subtitle: 'Within RWU Inc.',
+        hero_description: 'Explore internal opportunities...',
+        stat_open_positions: '500+',
+        stat_locations: '120+',
+        stat_departments: '25+'
+    });
+    const [stats, setStats] = useState([]);
+    const [loading, setLoading] = useState(false);
+      const displayStats = stats.slice(0, 3);
 
-     useEffect(() => {
-    loadContent();
-  }, []);
+    useEffect(() => {
+        loadContent();
+    }, []);
+    useEffect(() => {
+        fetchStats();
+    }, []);
 
-  const loadContent = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('home_content')
-      .select('*')
-      .single();
-    
-    if (data) {
-      setContent(data);
-    }
-    if (error) {
-      console.error('Error loading content:', error);
-    }
-    setLoading(false);
-  };
-   
+    const fetchStats = async () => {
+        try {
+            setLoading(true);
+            // Assuming your table is named 'about_stats' or similar
+            const { data, error } = await supabase
+                .from('about_stats')
+                .select('*')
+                .order('order_index', { ascending: true });
+
+            if (error) throw error;
+
+            setStats(data || []);
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            setError('Failed to load statistics');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadContent = async () => {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from('home_content')
+            .select('*')
+            .single();
+
+        if (data) {
+            setContent(data);
+        }
+        if (error) {
+            console.error('Error loading content:', error);
+        }
+        setLoading(false);
+    };
+
     return (
         <div className="pt-16 md:pt-24 pb-12 md:pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
@@ -41,8 +66,8 @@ export default function HeroSection() {
                         <div className="space-y-4">
                             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center lg:text-start font-bold leading-tight">
                                 {content.hero_title}{' '}
-                                <span className="text-[#E9C236]">{content.hero_subtitle}</span>{' '}
-                               
+                                <span className="text-[#489100]">{content.hero_subtitle}</span>{' '}
+
                             </h1>
 
                             <p className="text-sm sm:text-base md:text-lg text-center lg:text-start text-gray-800 leading-relaxed">
@@ -52,18 +77,20 @@ export default function HeroSection() {
 
                         <div className="mt-6 space-y-8 md:space-y-12">
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                                <div className="text-center p-3 md:p-4 bg-gray-50 rounded-lg">
-                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">{content.stat_open_positions}</div>
-                                    <div className="text-xs md:text-sm text-gray-600">Open Positions</div>
-                                </div>
-                                <div className="text-center p-3 md:p-4 bg-gray-50 rounded-lg">
-                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">{content.stat_locations}</div>
-                                    <div className="text-xs md:text-sm text-gray-600">Global Locations</div>
-                                </div>
-                                <div className="text-center p-3 md:p-4 bg-gray-50 rounded-lg col-span-2 md:col-span-1">
-                                    <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">{content.stat_departments}</div>
-                                    <div className="text-xs md:text-sm text-gray-600">Departments</div>
-                                </div>
+                                {displayStats.map((stat, index) => (
+                                    <div
+                                        key={stat.id}
+                                        className={`text-center p-3 md:p-4 bg-gray-50 rounded-lg ${index === 2 ? 'col-span-2 md:col-span-1' : ''
+                                            }`}
+                                    >
+                                        <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#478100]">
+                                            {stat.value}
+                                        </div>
+                                        <div className="text-xs md:text-sm text-gray-600">
+                                            {stat.label}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="flex flex-wrap gap-2 md:gap-3 justify-center lg:justify-start">
@@ -95,7 +122,7 @@ export default function HeroSection() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

@@ -71,9 +71,9 @@ export default function TeamSection() {
         <div className="relative overflow-hidden bg-gray-50">
             <div className="bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 bg-gray-50">
-                    <div className="flex md:flex-row lg:gap-32 flex-col xl:px-0 lg:px-0 px-8 sm:px-16 md:px-32 xl:pt-48 lg:pt-48 pt-32 items-center justify-center">
-                        <div className='lg:w-300 md:w-160 w-full'>
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                    <div className="flex md:flex-row lg:gap-32 flex-col xl:pt-48 lg:pt-48 pt-32 items-center justify-center">
+                        <div className='lg:w-300  w-full'>
+                            <h1 className="text-4xl font-bold text-gray-900 mb-6">
                                 <span className="relative inline-block">
                                     {pageHeading.split(' at ')[0] || 'Our Team'}
                                     <svg

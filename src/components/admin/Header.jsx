@@ -87,7 +87,7 @@ const Header = ({ activeTab, toggleSidebar }) => {
             `}
           >
             <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-[#E9C236] flex items-center justify-center text-black shadow-lg shadow-blue-500/20">
+              <div className="w-9 h-9 rounded-xl bg-gray-800 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                 <User size={18} />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />

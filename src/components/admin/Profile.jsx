@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { User, Mail, Shield, Lock, Eye, EyeOff, Save, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Mail, Shield, Lock, Eye, EyeOff, Save, X, AlertCircle } from 'lucide-react';
 
-const Profile = () => {
+const Profile = ({ showSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
   const [editing, setEditing] = useState(null);
   const [session, setSession] = useState(null);
   
@@ -29,6 +28,13 @@ const Profile = () => {
     fetchProfileData();
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const fetchProfileData = async () => {
     setLoading(true);
     try {
@@ -36,7 +42,7 @@ const Profile = () => {
       const sessionData = localStorage.getItem('admin_session');
       
       if (!sessionData) {
-        setErrorMessage('No user found. Please log in again.');
+        setError('No user found. Please log in again.');
         return;
       }
 
@@ -46,18 +52,18 @@ const Profile = () => {
       // Check if session is expired
       if (new Date().getTime() > sessionObj.expiresAt) {
         localStorage.removeItem('admin_session');
-        setErrorMessage('Session expired. Please log in again.');
+        setError('Session expired. Please log in again.');
         return;
       }
 
       // Fetch user data from admin_users table
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('admin_users')
         .select('*')
         .eq('id', sessionObj.user.id)
         .single();
       
-      if (error) throw error;
+      if (fetchError) throw fetchError;
       
       if (data) {
         setProfileData({
@@ -69,7 +75,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
-      setErrorMessage('Failed to load profile data');
+      setError('Failed to load profile data');
     } finally {
       setLoading(false);
     }
@@ -77,8 +83,7 @@ const Profile = () => {
 
   const handleProfileUpdate = async () => {
     setLoading(true);
-    setErrorMessage('');
-    setSuccessMessage('');
+    setError('');
 
     try {
       // Get session to verify user
@@ -89,7 +94,7 @@ const Profile = () => {
       const userId = sessionObj.user.id;
 
       // Update user in admin_users table
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from('admin_users')
         .update({
           full_name: profileData.fullName,
@@ -98,7 +103,7 @@ const Profile = () => {
         })
         .eq('id', userId);
       
-      if (error) throw error;
+      if (updateError) throw updateError;
       
       // Update session data
       const updatedSession = {
@@ -112,12 +117,11 @@ const Profile = () => {
       };
       localStorage.setItem('admin_session', JSON.stringify(updatedSession));
       
-      setSuccessMessage('Profile updated successfully!');
+      showSuccess('Profile updated successfully!');
       setEditing(null);
-      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error updating profile:', error);
-      setErrorMessage(error.message || 'Failed to update profile');
+      setError(error.message || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -125,18 +129,17 @@ const Profile = () => {
 
   const handlePasswordChange = async () => {
     setLoading(true);
-    setErrorMessage('');
-    setSuccessMessage('');
+    setError('');
 
     // Validation
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setErrorMessage('New passwords do not match');
+      setError('New passwords do not match');
       setLoading(false);
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      setErrorMessage('Password must be at least 8 characters');
+      setError('Password must be at least 8 characters');
       setLoading(false);
       return;
     }
@@ -147,7 +150,6 @@ const Profile = () => {
       if (!sessionData) throw new Error('Session expired. Please log in again.');
 
       const sessionObj = JSON.parse(sessionData);
-      const userEmail = sessionObj.user.email;
       const userId = sessionObj.user.id;
 
       // First, verify current password by checking against database
@@ -160,13 +162,13 @@ const Profile = () => {
       if (fetchError) throw fetchError;
 
       if (userData.password !== passwordData.currentPassword) {
-        setErrorMessage('Current password is incorrect');
+        setError('Current password is incorrect');
         setLoading(false);
         return;
       }
 
       // Update password in admin_users table
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from('admin_users')
         .update({
           password: passwordData.newPassword,
@@ -174,19 +176,18 @@ const Profile = () => {
         })
         .eq('id', userId);
       
-      if (error) throw error;
+      if (updateError) throw updateError;
       
-      setSuccessMessage('Password changed successfully!');
+      showSuccess('Password changed successfully!');
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
       setEditing(null);
-      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error changing password:', error);
-      setErrorMessage(error.message || 'Failed to change password');
+      setError(error.message || 'Failed to change password');
     } finally {
       setLoading(false);
     }
@@ -198,73 +199,84 @@ const Profile = () => {
         <div className="relative">
           <div className="w-16 h-16 border-4 border-[#478100]/20 border-t-[#478100] rounded-full animate-spin" />
         </div>
-        <p className="mt-4 text-slate-600 font-medium">Loading profile data...</p>
+        <p className="mt-4 text-gray-600 font-medium">Loading profile data...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-      {/* Success/Error Messages */}
-      {successMessage && (
-        <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <CheckCircle className="text-green-600" size={20} />
-          <span className="text-sm text-green-700 font-medium">{successMessage}</span>
-        </div>
-      )}
-
-      {errorMessage && (
-        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <AlertCircle className="text-red-600" size={20} />
-          <span className="text-sm text-red-700 font-medium">{errorMessage}</span>
+    <div className="space-y-6">
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-red-900 mb-1">Error</h4>
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+            <button
+              onClick={() => setError('')}
+              className="text-red-400 hover:text-red-600 transition-colors"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
       )}
 
       {/* Profile Information */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">Profile Information</h3>
-            <p className="text-xs text-slate-500 mt-1">Update your account details</p>
-          </div>
-
-          {editing === 'profile' ? (
-            <div className="flex gap-2">
-              <button
-                onClick={handleProfileUpdate}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors"
-                disabled={loading}
-              >
-                <Save size={16} />
-                {loading ? 'Saving...' : 'Save'}
-              </button>
-              <button
-                onClick={() => { setEditing(null); fetchProfileData(); }}
-                className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors"
-              >
-                <X size={16} />
-              </button>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gray-600 text-white flex items-center justify-center">
+                <User size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Profile Information</h3>
+                <p className="text-xs text-gray-600">Update your account details</p>
+              </div>
             </div>
-          ) : (
-            <button
-              onClick={() => setEditing('profile')}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors"
-            >
-              <User size={16} />
-              Edit
-            </button>
-          )}
+
+            {editing === 'profile' ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleProfileUpdate}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 text-sm font-medium transition-colors disabled:opacity-50"
+                  disabled={loading}
+                >
+                  <Save size={16} />
+                  {loading ? 'Saving...' : 'Save'}
+                </button>
+                <button
+                  onClick={() => { setEditing(null); fetchProfileData(); }}
+                  className="p-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setEditing('profile')}
+                className="flex items-center gap-2 px-4 py-2 border border-gray-600 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors"
+              >
+                <User size={16} />
+                Edit
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-5">
+        <div className="p-6 space-y-5">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">Full Name</label>
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Full Name</label>
             <input
               disabled={editing !== 'profile'}
               className={`w-full px-4 py-3 rounded-lg text-sm transition-colors ${
                 editing === 'profile'
-                  ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:outline-none text-slate-900'
-                  : 'bg-slate-50 border border-slate-200 text-slate-700'
+                  ? 'bg-gray-50 border border-gray-300 focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-gray-900'
+                  : 'bg-gray-50 border border-gray-300 text-gray-700'
               }`}
               value={profileData.fullName}
               onChange={(e) => setProfileData({...profileData, fullName: e.target.value})}
@@ -272,16 +284,16 @@ const Profile = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">Email Address</label>
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 disabled={editing !== 'profile'}
                 type="email"
                 className={`w-full pl-11 pr-4 py-3 rounded-lg text-sm transition-colors ${
                   editing === 'profile'
-                    ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:outline-none text-slate-900'
-                    : 'bg-slate-50 border border-slate-200 text-slate-700'
+                    ? 'bg-gray-50 border border-gray-300 focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-gray-900'
+                    : 'bg-gray-50 border border-gray-300 text-gray-700'
                 }`}
                 value={profileData.email}
                 onChange={(e) => setProfileData({...profileData, email: e.target.value})}
@@ -290,7 +302,7 @@ const Profile = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">Role</label>
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Role</label>
             <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
               <Shield className="text-blue-600" size={18} />
               <span className="text-sm font-semibold text-blue-700">{profileData.role}</span>
@@ -300,56 +312,63 @@ const Profile = () => {
       </div>
 
       {/* Security Settings */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">Security Settings</h3>
-            <p className="text-xs text-slate-500 mt-1">Change your password</p>
-          </div>
-
-          {editing === 'password' ? (
-            <div className="flex gap-2">
-              <button
-                onClick={handlePasswordChange}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors"
-                disabled={loading}
-              >
-                <Save size={16} />
-                {loading ? 'Updating...' : 'Update'}
-              </button>
-              <button
-                onClick={() => { 
-                  setEditing(null); 
-                  setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); 
-                }}
-                className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors"
-              >
-                <X size={16} />
-              </button>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gray-600 text-white flex items-center justify-center">
+                <Lock size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Security Settings</h3>
+                <p className="text-xs text-gray-600">Change your password</p>
+              </div>
             </div>
-          ) : (
-            <button
-              onClick={() => setEditing('password')}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors"
-            >
-              <Lock size={16} />
-              Change Password
-            </button>
-          )}
+
+            {editing === 'password' ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={handlePasswordChange}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 text-sm font-medium transition-colors disabled:opacity-50"
+                  disabled={loading}
+                >
+                  <Save size={16} />
+                  {loading ? 'Updating...' : 'Update'}
+                </button>
+                <button
+                  onClick={() => { 
+                    setEditing(null); 
+                    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); 
+                  }}
+                  className="p-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setEditing('password')}
+                className="flex items-center gap-2 px-4 py-2 border border-gray-600 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors"
+              >
+                <Lock size={16} />
+                Change Password
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-5">
+        <div className="p-6 space-y-5">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">Current Password</label>
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Current Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 disabled={editing !== 'password'}
                 type={showCurrentPassword ? 'text' : 'password'}
                 className={`w-full pl-11 pr-12 py-3 rounded-lg text-sm transition-colors ${
                   editing === 'password'
-                    ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:outline-none text-slate-900'
-                    : 'bg-slate-50 border border-slate-200 text-slate-400'
+                    ? 'bg-gray-50 border border-gray-300 focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-gray-900'
+                    : 'bg-gray-50 border border-gray-300 text-gray-400'
                 }`}
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
@@ -358,7 +377,7 @@ const Profile = () => {
               {editing === 'password' && (
                 <button
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                 >
                   {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -367,16 +386,16 @@ const Profile = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">New Password</label>
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">New Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 disabled={editing !== 'password'}
                 type={showNewPassword ? 'text' : 'password'}
                 className={`w-full pl-11 pr-12 py-3 rounded-lg text-sm transition-colors ${
                   editing === 'password'
-                    ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:outline-none text-slate-900'
-                    : 'bg-slate-50 border border-slate-200 text-slate-400'
+                    ? 'bg-gray-50 border border-gray-300 focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-gray-900'
+                    : 'bg-gray-50 border border-gray-300 text-gray-400'
                 }`}
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
@@ -385,26 +404,26 @@ const Profile = () => {
               {editing === 'password' && (
                 <button
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                 >
                   {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               )}
             </div>
-            <p className="text-xs text-slate-500 mt-1">Password must be at least 8 characters</p>
+            <p className="text-xs text-gray-500 mt-1">Password must be at least 8 characters</p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">Confirm New Password</label>
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Confirm New Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 disabled={editing !== 'password'}
                 type={showConfirmPassword ? 'text' : 'password'}
                 className={`w-full pl-11 pr-12 py-3 rounded-lg text-sm transition-colors ${
                   editing === 'password'
-                    ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:outline-none text-slate-900'
-                    : 'bg-slate-50 border border-slate-200 text-slate-400'
+                    ? 'bg-gray-50 border border-gray-300 focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-gray-900'
+                    : 'bg-gray-50 border border-gray-300 text-gray-400'
                 }`}
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
@@ -413,7 +432,7 @@ const Profile = () => {
               {editing === 'password' && (
                 <button
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>

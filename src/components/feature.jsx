@@ -241,16 +241,6 @@ const JobCarousel = () => {
     (currentIndex + 1) * itemsPerPage
   );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#478100] mx-auto"></div>
-          <p className="mt-4 text-xl text-gray-600 font-medium">Loading jobs...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (selectedJob) {
     return (
@@ -259,7 +249,7 @@ const JobCarousel = () => {
         
         <div className="bg-gray-50 py-8 md:py-12 min-h-screen">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 lg:p-10">
+            <div className=" p-6 md:p-8 lg:p-10">
               <button
                 onClick={() => setSelectedJob(null)}
                 className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-6"
@@ -272,7 +262,7 @@ const JobCarousel = () => {
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                   {selectedJob.title}
                 </h1>
-                <span className="text-xs md:text-sm font-bold text-orange-500 bg-orange-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full whitespace-nowrap self-start">
+                <span className="text-xs md:text-sm font-bold text-black bg-green-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full whitespace-nowrap self-start">
                   {selectedJob.badge}
                 </span>
               </div>

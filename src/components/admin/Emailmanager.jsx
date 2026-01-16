@@ -299,10 +299,10 @@ const EmailManager = ({ showSuccess }) => {
   const renderBatchesView = () => (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h2 className="text-xl font-bold text-slate-800">Email Batches</h2>
+        <h2 className="text-xl font-bold text-gray-800">Email Batches</h2>
         <button
           onClick={() => { setModalType('batch'); setShowModal(true); }}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-[#E9C236] text-slate-800 rounded-lg hover:bg-[#d9b230] transition-colors w-full sm:w-auto font-medium"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors w-full sm:w-auto font-medium"
         >
           <Plus size={18} />
           New Batch
@@ -310,18 +310,18 @@ const EmailManager = ({ showSuccess }) => {
       </div>
 
       {batches.length === 0 ? (
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 md:p-8 text-center">
-          <Users className="mx-auto text-slate-400 mb-3" size={36} md:size={48} />
-          <p className="text-slate-600">No batches yet. Create your first batch to get started!</p>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 text-center">
+          <Users className="mx-auto text-gray-400 mb-3" size={36} md:size={48} />
+          <p className="text-gray-600">No batches yet. Create your first batch to get started!</p>
         </div>
       ) : (
         <div className="grid gap-3 md:gap-4">
           {batches.map(batch => (
-            <div key={batch.id} className="bg-white p-4 md:p-6 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+            <div key={batch.id} className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-slate-800 truncate">{batch.name}</h3>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <h3 className="text-lg font-semibold text-gray-800 truncate">{batch.name}</h3>
+                  <p className="text-sm text-gray-500 mt-1">
                     {batch.total_emails || 0} recipients • Created {new Date(batch.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -345,20 +345,20 @@ const EmailManager = ({ showSuccess }) => {
   const renderTemplatesView = () => (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h2 className="text-xl font-bold text-slate-800">Brevo Templates</h2>
+        <h2 className="text-xl font-bold text-gray-800">Brevo Templates</h2>
         <button
           onClick={() => { setModalType('template'); setShowModal(true); }}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-[#E9C236] text-slate-800 rounded-lg hover:bg-[#d9b230] transition-colors w-full sm:w-auto font-medium"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors w-full sm:w-auto font-medium"
         >
           <Plus size={18} />
           Add Template
         </button>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4 mb-4">
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 md:p-4 mb-4">
         <div className="flex gap-2">
-          <AlertCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={18} md:size={20} />
-          <div className="text-sm text-blue-800">
+          <AlertCircle className="text-gray-600 flex-shrink-0 mt-0.5" size={18} md:size={20} />
+          <div className="text-sm text-gray-800">
             <p className="font-medium">Templates are managed in Brevo</p>
             <p className="mt-1">Create and design your email templates in your Brevo dashboard, then reference them here by ID.</p>
           </div>
@@ -366,21 +366,21 @@ const EmailManager = ({ showSuccess }) => {
       </div>
 
       {templates.length === 0 ? (
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 md:p-8 text-center">
-          <Mail className="mx-auto text-slate-400 mb-3" size={36} md:size={48} />
-          <p className="text-slate-600">No templates yet. Add your first Brevo template reference!</p>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 text-center">
+          <Mail className="mx-auto text-gray-400 mb-3" size={36} md:size={48} />
+          <p className="text-gray-600">No templates yet. Add your first Brevo template reference!</p>
         </div>
       ) : (
         <div className="grid gap-3 md:gap-4">
           {templates.map(template => (
-            <div key={template.id} className="bg-white p-4 md:p-6 rounded-lg border border-slate-200">
+            <div key={template.id} className="bg-white p-4 md:p-6 rounded-lg border border-gray-200">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h3 className="text-lg font-semibold text-slate-800 truncate">{template.name}</h3>
-                    <span className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded whitespace-nowrap">ID: {template.id}</span>
+                    <h3 className="text-lg font-semibold text-gray-800 truncate">{template.name}</h3>
+                    <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded whitespace-nowrap">ID: {template.id}</span>
                   </div>
-                  <p className="text-sm text-slate-500 line-clamp-2">{template.description}</p>
+                  <p className="text-sm text-gray-500 line-clamp-2">{template.description}</p>
                 </div>
                 <div className="flex gap-2 self-end sm:self-start">
                   <button
@@ -401,15 +401,15 @@ const EmailManager = ({ showSuccess }) => {
 
   const renderSendView = () => (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-slate-800">Send Email Campaign</h2>
+      <h2 className="text-xl font-bold text-gray-800">Send Email Campaign</h2>
 
-      <div className="bg-white p-4 md:p-6 rounded-lg border border-slate-200 space-y-6">
+      <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 space-y-6">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Select Batch</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Select Batch</label>
           <select
             value={sendConfig.batch_id}
             onChange={(e) => setSendConfig({ ...sendConfig, batch_id: e.target.value })}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
           >
             <option value="">Choose a batch...</option>
             {batches.map(batch => (
@@ -421,11 +421,11 @@ const EmailManager = ({ showSuccess }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Select Template</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Select Template</label>
           <select
             value={sendConfig.template_id}
             onChange={(e) => setSendConfig({ ...sendConfig, template_id: e.target.value })}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
           >
             <option value="">Choose a template...</option>
             {templates.map(template => (
@@ -439,7 +439,7 @@ const EmailManager = ({ showSuccess }) => {
         <button
           onClick={handleSendEmail}
           disabled={!sendConfig.batch_id || !sendConfig.template_id || loading}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#E9C236] text-slate-800 rounded-lg hover:bg-[#d9b230] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors font-medium"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
         >
           <Send size={18} />
           {loading ? 'Sending...' : 'Send Email Campaign'}
@@ -450,26 +450,26 @@ const EmailManager = ({ showSuccess }) => {
 
   const renderHistoryView = () => (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">Send History</h2>
+      <h2 className="text-xl font-bold text-gray-800">Send History</h2>
 
       {sendRuns.length === 0 ? (
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 md:p-8 text-center">
-          <Clock className="mx-auto text-slate-400 mb-3" size={36} md:size={48} />
-          <p className="text-slate-600">No campaigns sent yet. Send your first campaign to see it here!</p>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 text-center">
+          <Clock className="mx-auto text-gray-400 mb-3" size={36} md:size={48} />
+          <p className="text-gray-600">No campaigns sent yet. Send your first campaign to see it here!</p>
         </div>
       ) : (
         <div className="grid gap-3 md:gap-4">
           {sendRuns.map(run => (
-            <div key={run.id} className="bg-white p-4 md:p-6 rounded-lg border border-slate-200">
+            <div key={run.id} className="bg-white p-4 md:p-6 rounded-lg border border-gray-200">
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-3 mb-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-slate-800 truncate">{run.batch_name}</h3>
-                  <p className="text-sm text-slate-500 truncate">Template: {run.template_name}</p>
+                  <h3 className="text-lg font-semibold text-gray-800 truncate">{run.batch_name}</h3>
+                  <p className="text-sm text-gray-500 truncate">Template: {run.template_name}</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap self-start ${
                   run.status === 'completed' ? 'bg-green-100 text-green-700' :
                   run.status === 'failed' ? 'bg-red-100 text-red-700' :
-                  'bg-yellow-100 text-yellow-700'
+                  'bg-gray-100 text-gray-700'
                 }`}>
                   {run.status === 'completed' ? <CheckCircle size={14} className="inline mr-1" /> :
                    run.status === 'failed' ? <XCircle size={14} className="inline mr-1" /> :
@@ -479,16 +479,16 @@ const EmailManager = ({ showSuccess }) => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
                 <div>
-                  <p className="text-slate-500">Sent</p>
-                  <p className="font-semibold text-slate-800">{run.sent_count || 0}</p>
+                  <p className="text-gray-500">Sent</p>
+                  <p className="font-semibold text-gray-800">{run.sent_count || 0}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Failed</p>
-                  <p className="font-semibold text-slate-800">{run.failed_count || 0}</p>
+                  <p className="text-gray-500">Failed</p>
+                  <p className="font-semibold text-gray-800">{run.failed_count || 0}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Started</p>
-                  <p className="font-semibold text-slate-800 truncate">{new Date(run.started_at).toLocaleString()}</p>
+                  <p className="text-gray-500">Started</p>
+                  <p className="font-semibold text-gray-800 truncate">{new Date(run.started_at).toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -502,10 +502,10 @@ const EmailManager = ({ showSuccess }) => {
     if (!showModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-slate-700/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-gray-700/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-          <div className="p-4 md:p-6 border-b border-slate-200">
-            <h3 className="text-xl font-bold text-slate-800">
+          <div className="p-4 md:p-6 border-b border-gray-200">
+            <h3 className="text-xl font-bold text-gray-800">
               {modalType === 'batch' ? 'Create New Batch' : 'Add Brevo Template'}
             </h3>
           </div>
@@ -514,48 +514,48 @@ const EmailManager = ({ showSuccess }) => {
             {modalType === 'batch' ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Batch Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Batch Name</label>
                   <input
                     type="text"
                     value={newBatch.name}
                     onChange={(e) => setNewBatch({ ...newBatch, name: e.target.value })}
                     placeholder="e.g., Newsletter Jan 2024"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236]"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Upload CSV</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Upload CSV</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="file"
                       accept=".csv"
                       onChange={handleCSVUpload}
-                      className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#E9C236] file:text-slate-800 hover:file:bg-[#d9b230]"
+                      className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900"
                     />
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">CSV should have email addresses in the first column</p>
+                  <p className="text-xs text-gray-500 mt-1">CSV should have email addresses in the first column</p>
                 </div>
 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-300"></div>
+                    <div className="w-full border-t border-gray-300"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-slate-500">OR</span>
+                    <span className="px-2 bg-white text-gray-500">OR</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Paste Emails</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Paste Emails</label>
                   <textarea
                     value={newBatch.emails}
                     onChange={(e) => setNewBatch({ ...newBatch, emails: e.target.value })}
                     placeholder="Paste email addresses (comma or newline separated)"
                     rows={6}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236] resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500 resize-none"
                   />
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     {newBatch.emails.split(/[\n,]/).filter(e => e.trim().includes('@')).length} valid emails detected
                   </p>
                 </div>
@@ -563,52 +563,52 @@ const EmailManager = ({ showSuccess }) => {
             ) : (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Brevo Template ID</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Brevo Template ID</label>
                   <input
                     type="text"
                     value={newTemplate.brevo_id}
                     onChange={(e) => setNewTemplate({ ...newTemplate, brevo_id: e.target.value })}
                     placeholder="e.g., 12"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236]"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Template Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Template Name</label>
                   <input
                     type="text"
                     value={newTemplate.name}
                     onChange={(e) => setNewTemplate({ ...newTemplate, name: e.target.value })}
                     placeholder="e.g., Welcome Email"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236]"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                   <textarea
                     value={newTemplate.description}
                     onChange={(e) => setNewTemplate({ ...newTemplate, description: e.target.value })}
                     placeholder="Brief description of this template"
                     rows={3}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#E9C236] focus:border-[#E9C236] resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500 resize-none"
                   />
                 </div>
               </>
             )}
           </div>
 
-          <div className="p-4 md:p-6 border-t border-slate-200 flex flex-col sm:flex-row justify-end gap-3">
+          <div className="p-4 md:p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end gap-3">
             <button
               onClick={() => setShowModal(false)}
-              className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors w-full sm:w-auto order-2 sm:order-1 font-medium"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors w-full sm:w-auto order-2 sm:order-1 font-medium"
             >
               Cancel
             </button>
             <button
               onClick={modalType === 'batch' ? handleCreateBatch : handleAddTemplate}
               disabled={loading}
-              className="px-4 py-2 bg-[#E9C236] text-slate-800 rounded-lg hover:bg-[#d9b230] disabled:bg-slate-300 transition-colors w-full sm:w-auto order-1 sm:order-2 font-medium"
+              className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 disabled:bg-gray-300 transition-colors w-full sm:w-auto order-1 sm:order-2 font-medium"
             >
               {loading ? 'Saving...' : modalType === 'batch' ? 'Create Batch' : 'Add Template'}
             </button>
@@ -622,16 +622,16 @@ const EmailManager = ({ showSuccess }) => {
     if (!showDeleteModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-slate-700/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+      <div className="fixed inset-0 bg-gray-700/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
         <div className="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-2xl">
-          <div className="p-6 border-b border-slate-200">
-            <h3 className="text-xl font-bold text-slate-800">
+          <div className="p-6 border-b border-gray-200">
+            <h3 className="text-xl font-bold text-gray-800">
               {itemToDelete.type === 'send_confirmation' ? 'Confirm Send' : 'Confirm Delete'}
             </h3>
           </div>
           
           <div className="p-6">
-            <p className="text-slate-700 mb-6">
+            <p className="text-gray-700 mb-6">
               {itemToDelete.type === 'send_confirmation' 
                 ? 'Are you sure you want to send this email campaign? This action cannot be undone.'
                 : `Are you sure you want to delete "${itemToDelete.name}"? This action cannot be undone.`
@@ -644,7 +644,7 @@ const EmailManager = ({ showSuccess }) => {
                   setShowDeleteModal(false);
                   setItemToDelete({ id: null, type: '', name: '' });
                 }}
-                className="px-6 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors w-full sm:w-1/2 font-medium border border-slate-300"
+                className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors w-full sm:w-1/2 font-medium border border-gray-300"
               >
                 No
               </button>
@@ -687,14 +687,14 @@ const EmailManager = ({ showSuccess }) => {
       <div className="sm:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`flex items-center gap-2 px-4 py-2 ${mobileMenuOpen ? "border border-red-600 text-black" : "border border-[#E9C236] text-black"}  text-slate-800 rounded-lg mb-4 w-full justify-center font-medium` }
+          className={`flex items-center gap-2 px-4 py-2 ${mobileMenuOpen ? "border border-gray-600 text-gray-800" : "border border-gray-600 text-gray-800"} rounded-lg mb-4 w-full justify-center font-medium` }
         >
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           {mobileMenuOpen ? 'Close Menu' : 'Navigation'}
         </button>
       </div>
 
-      <div className={`flex flex-col sm:flex-row gap-2 border-b border-slate-200 overflow-x-auto ${
+      <div className={`flex flex-col sm:flex-row gap-2 border-b border-gray-200 overflow-x-auto ${
         mobileMenuOpen ? 'flex' : 'hidden sm:flex'
       }`}>
         {views.map(({ id, label, icon: Icon }) => (
@@ -706,8 +706,8 @@ const EmailManager = ({ showSuccess }) => {
             }}
             className={`flex items-center justify-center sm:justify-start gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap min-w-[120px] sm:min-w-0 ${
               activeView === id
-                ? 'text-[#E9C236] border-b-2 sm:border-b-2 border-[#E9C236]'
-                : 'text-slate-600 hover:text-slate-800'
+                ? 'text-gray-800 border-b-2 sm:border-b-2 border-gray-800'
+                : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             <Icon size={18} />

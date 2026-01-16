@@ -48,8 +48,11 @@ export default function PressAwards() {
 
     if (loading) {
         return (
-            <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-                <div className="text-gray-500">Loading...</div>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#478100] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading press information...</p>
+                </div>
             </div>
         );
     }
@@ -58,9 +61,9 @@ export default function PressAwards() {
         <div className="bg-gray-50 min-h-screen">
             <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 bg-gray-50">
-                    <div className="flex md:flex-row lg:gap-32 flex-col xl:px-0 lg:px-0 px-8 sm:px-16 md:px-32 xl:pt-48 lg:pt-48 pt-32 items-center justify-center">
+                    <div className="flex md:flex-row lg:gap-32 flex-col xl:px-0 lg:px-0 md:px-12 xl:pt-32 lg:pt-32 pt-16 items-center justify-center">
                         <div className='lg:w-300 md:w-160 w-full'>
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                            <h1 className="text-4xl font-bold text-gray-900 mb-6">
                                 <span className="relative inline-block">
                                     {headerData?.title || 'Press At Rwu..'}
                                     <svg
@@ -98,12 +101,12 @@ export default function PressAwards() {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">
+                <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
                     Featured Articles
                 </h2>
                 
                 {featuredArticle && (
-                    <div className="bg-white rounded-2xl overflow-hidden mb-16 border-gray-100">
+                    <div className="bg-white rounded-md overflow-hidden mb-16 border-gray-100">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div className="relative h-64 lg:h-auto">
                                 <img
@@ -139,7 +142,7 @@ export default function PressAwards() {
                     {articles.map((article) => (
                         <div
                             key={article.id}
-                            className="bg-white overflow-hidden transition-all duration-300 border border-gray-100 group"
+                            className="bg-white overflow-hidden rounded-md transition-all duration-300 border border-gray-100 group"
                         >
                             <div className="relative h-48 overflow-hidden">
                                 <img

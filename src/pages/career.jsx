@@ -51,7 +51,7 @@ export default function Career() {
     };
 
     // Fallback data
-    const pageTitle = careerData?.page_title || 'RWU Inc.';
+    const pageTitle = careerData?.page_title || 'RWU Inc';
     const pageSubtitle = careerData?.page_subtitle || 'Careers Growth';
     const heroText = careerData?.hero_text || 'These are the stories of RWU team members worldwide who advanced their careers through internal opportunities. Their backgrounds and skills may differ, but they had the same goal: to find a role that fits their aspirations and leverages their talents. And with RWU Inc.\'s internal job portal, they found exactly that while growing within our organization.';
     const heroImage = careerData?.hero_image || 'https://res.cloudinary.com/do4b0rrte/image/upload/v1767968949/reviewbanner_miswat.png';
@@ -72,11 +72,10 @@ export default function Career() {
     return (
         <div className="bg-gray-50 min-h-screen">
             <div className="bg-white">
-                <div className="max-w-7xl mx-auto px-4 md::px-6 lg:px-32">
-                    <div className="flex md:flex-row lg:gap-32 flex-col xl:px-0 lg:px-0 px-32 xl:pt-48 lg:pt-48 pt-32 items-center justify-center relative">
-                        <div className="lg:w-300 md:w-160 w-80 relative z-10">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-6 relative z-10">
-                                {pageTitle}{' '}
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+                    <div className="flex md:flex-row lg:gap-32 flex-col  xl:pt-48 lg:pt-48 md:pt-40 pt-32 items-center justify-center relative">
+                        <div className="lg:w-300 w-full relative z-10">
+                            <h1 className="text-4xl font-bold text-gray-900 mb-6 relative z-10">
                                 <span className="relative inline-block">
                                     {pageSubtitle}
                                     <svg
@@ -121,7 +120,7 @@ export default function Career() {
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                     }}
-                    className="py-16 px-4"
+                    className="  min-h-screen relative py-16 px-4"
                 >
                     <div className="max-w-5xl mx-auto mt-32">
                         <div className="text-center mb-12">

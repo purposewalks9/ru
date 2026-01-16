@@ -57,10 +57,9 @@ export default function Benefits() {
   return (
     <div className="bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-2xl text-black font-bold text-center mb-16 leading-tight">
-          {benefitsData.heading || "Why RWU Inc. is"}{' '}
+        <h2 className="text-2xl text-black font-bold text-center md:mb-0 mb-16 leading-tight">
           <span className="relative inline-block">
-            Different
+           {benefitsData.heading || "Why RWU Inc. is"}{' '}
             <svg
               className="absolute -bottom-2 left-0 w-full"
               height="12"

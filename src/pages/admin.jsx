@@ -17,6 +17,8 @@ import {
   RefreshCw
 } from 'lucide-react';
 import EmailManager from '../components/admin/Emailmanager.jsx';
+import AboutManager from '../components/admin/Aboutmanager.jsx';
+import FooterManager from '../components/admin/FooterMnanger.jsx';
 
 const PlaceholderEditor = ({ title }) => (
   <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
@@ -101,10 +103,13 @@ const AdminPortal = () => {
                 case 'jobs':
                     return <JobsManager showSuccess={showSuccess} />;
                 case 'profile':
-                    return <Profile />;
+                    return <Profile showSuccess={showSuccess} />;
                 case 'press':
-                    return <PressAwardsManager showSuccess={showSuccess}/>
+                    return <PressAwardsManager showSuccess={showSuccess}/>;
+                case 'about':
+                    return <AboutManager showSuccess={showSuccess} />;
                 case 'footer':
+                  return <FooterManager showSuccess={showSuccess} />;
                 case 'cta':
                     return <CTAManager showSuccess={showSuccess} />;
                 case 'mail':

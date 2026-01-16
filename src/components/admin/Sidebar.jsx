@@ -21,6 +21,7 @@ import {
   FileText,
   Send,
   Star
+
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
@@ -44,8 +45,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
         { id: 'cta', label: 'Call to Action', icon: Megaphone },
         { id: 'jobs', label: 'Job Board', icon: Briefcase },
         { id: 'mail', label: 'Send Mail', icon: Send },
-        { id: 'testimonial', label: 'Testimonials', icon: Star },
-        { id: 'application', label: 'Job Applications', icon: FileText }
+        { id: 'footer', label: 'Footer', icon: MessageSquare }
       ]
     }
   ];

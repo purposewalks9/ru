@@ -97,10 +97,14 @@ const Stories = () => {
         </div>
     );
 
+    
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-gray-500">Loading...</div>
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#478100] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading stories information...</p>
+                </div>
             </div>
         );
     }
@@ -108,14 +112,13 @@ const Stories = () => {
     return (
         <div className="relative overflow-hidden bg-gray-50">
             <div className="bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 lg:px-8">
-                    <div className="flex flex-col md:flex-row gap-16 pt-32 m-12 items-center justify-center">
-                        <div className='lg:w-300 md:w-160 w-80'>
+                <div className="max-w-7xl mx-auto  px-4 md:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row gap-16 md:pt-32 lg:pt-24 pt-28 md:m-12 m-6 items-center justify-center">
+                        <div className='lg:w-300 md:w-160 w-full'>
                             <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                                {storyData?.pageheading || 'RWU Inc.'}
+                                <span className="relative text-4xl inline-block">
+                                    {storyData?.pageheading || 'RWU Inc.'}
                                 {' '}
-                                <span className="relative inline-block">
-                                    Success Stories
                                     <svg
                                         className="absolute -bottom-2 left-0 w-full"
                                         height="8"
@@ -157,7 +160,7 @@ const Stories = () => {
                 backgroundRepeat: "no-repeat",
             }} className="min-h-screen relative px-4 py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto md:mt-32 mt-24 lg:mt-48">
-                    <h1 className="text-2xl font-bold text-center text-gray-900 mb-24">
+                    <h1 className="text-2xl font-bold text-center text-black mb-24">
                         Team Member Stories
                     </h1>
 
@@ -176,7 +179,7 @@ const Stories = () => {
                                             />
                                         )}
                                         <div>
-                                            <p className="text-gray-700 text-sm mb-3">
+                                            <p className="text-black text-sm mb-3">
                                                 {storyData.card1description}
                                             </p>
                                         </div>
@@ -197,7 +200,7 @@ const Stories = () => {
                                             />
                                         )}
                                         <div>
-                                            <p className="text-gray-700 text-sm mb-3">
+                                            <p className="text-black text-sm mb-3">
                                                 {storyData.card2description}
                                             </p>
                                         </div>
@@ -229,7 +232,7 @@ const Stories = () => {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {testimonials.map((testimonial, index) => (
-                            <div key={index} className="bg-white p-6 border border-gray-200">
+                            <div key={index} className="bg-white p-6 border rounded-md border-gray-200">
                                 <div className="flex justify-between mb-4">
                                     <div>
                                         <h3 className="font-bold">{testimonial.name}</h3>
