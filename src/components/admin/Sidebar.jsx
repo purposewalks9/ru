@@ -16,7 +16,11 @@ import {
   Zap,
   ChevronRight,
   LogOut,
-  Settings
+  Settings,
+  Megaphone,
+  FileText,
+  Send,
+  Star
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
@@ -24,38 +28,37 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
 
   const menuGroups = [
     {
-      title: "OVERVIEW",
+      title: "PAGES",
       items: [
-        { id: 'home', label: 'HomePage', icon: LayoutDashboard },
+        { id: 'home', label: 'Home Page', icon: Home },
         { id: 'press', label: 'Press & Awards', icon: Award },
+        { id: 'stories', label: 'Stories', icon: BookOpen },
+        { id: 'team', label: 'Team', icon: Users },
+        { id: 'career', label: 'Career', icon: Briefcase },
+        { id: 'about', label: 'About', icon: Info },
       ]
     },
     {
-      title: "COMMUNITY",
+      title: "COMPONENTS",
       items: [
-        { id: 'stories', label: 'Success Stories', icon: BookOpen },
-        { id: 'team', label: 'Our Team', icon: Users },
-      ]
-    },
-    {
-      title: "GROWTH",
-      items: [
-        { id: 'career', label: 'Career Path', icon: Briefcase },
-        { id: 'cta', label: 'Cta', icon: Mail },
-        { id: 'jobs', label: 'Jobs', icon: Info },
-        { id: 'mail', label: 'Email', icon: Mail }
+        { id: 'cta', label: 'Call to Action', icon: Megaphone },
+        { id: 'jobs', label: 'Job Board', icon: Briefcase },
+        { id: 'mail', label: 'Send Mail', icon: Send },
+        { id: 'testimonial', label: 'Testimonials', icon: Star },
+        { id: 'application', label: 'Job Applications', icon: FileText }
       ]
     }
   ];
 
   const sidebarClasses = `
-    fixed inset-y-0 left-0 z-50 w-72 
-    bg-white text-slate-300 
-    transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
-    border-r border-white/5
+    fixed inset-y-0 left-0 z-50 w-64
+    bg-white
+    transition-all duration-300 ease-in-out
+    border-r border-gray-200
     flex flex-col
+    shadow-lg
     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-    md:translate-x-0 md:static md:inset-0
+    md:translate-x-0 md:static md:inset-0 md:shadow-none
   `;
 
   return (
@@ -63,38 +66,41 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
       {/* Mobile Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-500"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       <aside className={sidebarClasses}>
         {/* Brand Header */}
-        <div className="h-20 flex items-center px-8 border-b border-white/5 gap-3">
-          <div className="md:w-10 w-10 h-auto md:ml-0 ml-4">
+        <div className="h-16 flex items-center px-5 border-b border-gray-200 gap-3">
+          <div className="w-8 h-8 flex-shrink-0">
             <img 
               src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768272166/Frame_2147226388_1_bk3t7g.png" 
               alt="RWU Inc. Logo" 
-              className="w-full h-auto object-cover" 
+              className="w-full h-full object-contain" 
             />
           </div>
-          <div>
-            <h1 className="text-white font-bold tracking-tight text-lg">Rwu Inc</h1>
-            <p className="text-[10px] text-slate-500 font-medium tracking-[0.2em] uppercase">Enterprise Portal</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-gray-900 font-bold text-base truncate">RWU Inc</h1>
+            <p className="text-[10px] text-gray-500 font-medium tracking-wider uppercase">Admin Portal</p>
           </div>
-          <button className="md:hidden ml-auto p-2 text-slate-500 hover:text-white" onClick={() => setIsOpen(false)}>
-            <X size={20} />
+          <button 
+            className="md:hidden p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors" 
+            onClick={() => setIsOpen(false)}
+          >
+            <X size={18} />
           </button>
         </div>
 
         {/* Navigation Content */}
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8">
+        <div className="flex-1 overflow-y-auto py-5 px-3 space-y-6">
           {menuGroups.map((group, idx) => (
-            <div key={idx} className="space-y-2">
-              <h3 className="px-4 text-[10px] font-bold text-slate-500 tracking-[0.15em] mb-4">
+            <div key={idx} className="space-y-1">
+              <h3 className="px-3 text-[10px] font-semibold text-gray-500 tracking-wider mb-3">
                 {group.title}
               </h3>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const isActive = activeTab === item.id;
                   const Icon = item.icon;
@@ -106,27 +112,27 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
                         if (window.innerWidth < 768) setIsOpen(false);
                       }}
                       className={`
-                        group relative flex items-center w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200
+                        group relative flex items-center w-full px-3 py-2.5 text-sm font-medium rounded transition-colors duration-200
                         ${isActive 
-                          ? 'bg-[#478100]/10 text-[#E9C236] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' 
-                          : 'text-black hover:bg-gray-200 hover:text-black'}
+                          ? 'bg-gray-100 text-gray-900 shadow-sm' 
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}
                       `}
                     >
-                      {/* Active Indicator Bar */}
+                      {/* Active Indicator */}
                       {isActive && (
-                        <div className="absolute left-0 w-1 h-5 bg-[#E9C236] rounded-r-full" />
+                        <div className="absolute left-0 w-1 h-6 bg-gray-600 rounded-r-full" />
                       )}
                       
                       <Icon 
-                        className={`mr-3 transition-colors ${isActive ? 'text-[#E9C236]' : 'text-slate-500 group-hover:text-slate-300'}`} 
+                        className={`mr-3 flex-shrink-0 transition-colors ${
+                          isActive ? 'text-gray-600' : 'text-gray-400 group-hover:text-gray-600'
+                        }`} 
                         size={18} 
                       />
-                      <span className="flex-1 text-left">{item.label}</span>
+                      <span className="flex-1 text-left truncate">{item.label}</span>
                       
-                      {isActive ? (
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#E9C236] animate-pulse" />
-                      ) : (
-                        <ChevronRight className="opacity-0 -translate-x-2 transition-all group-hover:opacity-40 group-hover:translate-x-0" size={14} />
+                      {isActive && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-gray-600 flex-shrink-0" />
                       )}
                     </button>
                   );
