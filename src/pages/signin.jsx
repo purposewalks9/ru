@@ -12,40 +12,50 @@ const SignIn = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      // Check if user exists in admin_users table with matching credentials
-      const { data: adminUser, error: queryError } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('email', email.trim().toLowerCase())
-        .eq('password', password)
-        .maybeSingle();
+  try {
+    // First, get the user by email
+    const { data: adminUser, error: queryError } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('email', email.trim().toLowerCase())
+      .maybeSingle();
 
-      if (queryError) {
-        console.error('Database error:', queryError);
-        throw new Error('Database connection error');
-      }
-
-      if (!adminUser) {
-        throw new Error('Invalid email or password');
-      }
-
-      // Redirect to admin dashboard
-      navigate('/admin');
-
-    } catch (err) {
-      console.error('Sign in error:', err);
-      setError(err.message || 'An error occurred during sign in');
-    } finally {
-      setLoading(false);
+    if (queryError) {
+      console.error('Database error:', queryError);
+      throw new Error('Database connection error');
     }
-  };
 
+    // Check if user exists and password matches
+    if (!adminUser || adminUser.password !== password) {
+      throw new Error('Invalid email or password');
+    }
+
+    // Create session in localStorage
+    const sessionData = {
+      user: {
+        id: adminUser.id,
+        email: adminUser.email,
+        name: adminUser.name
+      },
+      expiresAt: new Date().getTime() + (24 * 60 * 60 * 1000) // 24 hours from now
+    };
+    localStorage.setItem('admin_session', JSON.stringify(sessionData));
+
+    // Navigate to admin
+    navigate('/admin');
+
+  } catch (err) {
+    console.error('Sign in error:', err);
+    setError(err.message || 'An error occurred during sign in');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center xl:py-48 lg:py-32 md:py-24 py-12">
 
