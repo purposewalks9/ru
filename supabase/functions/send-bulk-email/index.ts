@@ -1,7 +1,7 @@
-// ============================================
+
 // SUPABASE EDGE FUNCTION: send-bulk-email
 // File: supabase/functions/send-bulk-email/index.ts
-// ============================================
+
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
@@ -170,10 +170,6 @@ serve(async (req) => {
     );
   }
 });
-
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
 
 /**
  * Send email using Brevo API

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { User, Mail, Shield, Lock, Eye, EyeOff, Save, X, AlertCircle } from 'lucide-react';
+import bcrypt from 'bcryptjs';
+
 
 const Profile = ({ showSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -38,7 +40,6 @@ const Profile = ({ showSuccess }) => {
   const fetchProfileData = async () => {
     setLoading(true);
     try {
-      // Get user from localStorage session
       const sessionData = localStorage.getItem('admin_session');
       
       if (!sessionData) {
@@ -49,14 +50,12 @@ const Profile = ({ showSuccess }) => {
       const sessionObj = JSON.parse(sessionData);
       setSession(sessionObj);
 
-      // Check if session is expired
       if (new Date().getTime() > sessionObj.expiresAt) {
         localStorage.removeItem('admin_session');
         setError('Session expired. Please log in again.');
         return;
       }
 
-      // Fetch user data from admin_users table
       const { data, error: fetchError } = await supabase
         .from('admin_users')
         .select('*')
@@ -86,14 +85,12 @@ const Profile = ({ showSuccess }) => {
     setError('');
 
     try {
-      // Get session to verify user
       const sessionData = localStorage.getItem('admin_session');
       if (!sessionData) throw new Error('Session expired. Please log in again.');
 
       const sessionObj = JSON.parse(sessionData);
       const userId = sessionObj.user.id;
 
-      // Update user in admin_users table
       const { error: updateError } = await supabase
         .from('admin_users')
         .update({
@@ -105,7 +102,6 @@ const Profile = ({ showSuccess }) => {
       
       if (updateError) throw updateError;
       
-      // Update session data
       const updatedSession = {
         ...sessionObj,
         user: {
@@ -131,7 +127,6 @@ const Profile = ({ showSuccess }) => {
     setLoading(true);
     setError('');
 
-    // Validation
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError('New passwords do not match');
       setLoading(false);
@@ -145,14 +140,12 @@ const Profile = ({ showSuccess }) => {
     }
 
     try {
-      // Get session
       const sessionData = localStorage.getItem('admin_session');
       if (!sessionData) throw new Error('Session expired. Please log in again.');
 
       const sessionObj = JSON.parse(sessionData);
       const userId = sessionObj.user.id;
 
-      // First, verify current password by checking against database
       const { data: userData, error: fetchError } = await supabase
         .from('admin_users')
         .select('password')
@@ -161,23 +154,43 @@ const Profile = ({ showSuccess }) => {
 
       if (fetchError) throw fetchError;
 
-      if (userData.password !== passwordData.currentPassword) {
-        setError('Current password is incorrect');
-        setLoading(false);
-        return;
+      // Check if password exists and starts with bcrypt prefix
+      if (!userData.password || !userData.password.startsWith('$2')) {
+        // Password is not hashed - treat as plain text for first-time fix
+        if (passwordData.currentPassword !== userData.password) {
+          setError('Current password is incorrect');
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Password is hashed - use bcrypt compare
+        const isValid = await bcrypt.compare(
+          passwordData.currentPassword,
+          userData.password
+        );
+
+        if (!isValid) {
+          setError('Current password is incorrect');
+          setLoading(false);
+          return;
+        }
       }
 
-      // Update password in admin_users table
+      // Hash and store new password
+      const hashedPassword = await bcrypt.hash(passwordData.newPassword, 12);
+
       const { error: updateError } = await supabase
         .from('admin_users')
         .update({
-          password: passwordData.newPassword,
-          updated_at: new Date().toISOString()
+          password: hashedPassword,
+          updated_at: new Date().toISOString(),
+          failed_attempts: 0,
+          locked_until: null
         })
         .eq('id', userId);
-      
+
       if (updateError) throw updateError;
-      
+
       showSuccess('Password changed successfully!');
       setPasswordData({
         currentPassword: '',
@@ -206,7 +219,6 @@ const Profile = ({ showSuccess }) => {
 
   return (
     <div className="space-y-6">
-      {/* Error Message */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 animate-in fade-in slide-in-from-top-2">
           <div className="flex items-start gap-3">
@@ -225,7 +237,6 @@ const Profile = ({ showSuccess }) => {
         </div>
       )}
 
-      {/* Profile Information */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -311,7 +322,6 @@ const Profile = ({ showSuccess }) => {
         </div>
       </div>
 
-      {/* Security Settings */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -376,6 +386,7 @@ const Profile = ({ showSuccess }) => {
               />
               {editing === 'password' && (
                 <button
+                  type="button"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                 >
@@ -403,6 +414,7 @@ const Profile = ({ showSuccess }) => {
               />
               {editing === 'password' && (
                 <button
+                  type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                 >
@@ -431,6 +443,7 @@ const Profile = ({ showSuccess }) => {
               />
               {editing === 'password' && (
                 <button
+                  type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                 >
