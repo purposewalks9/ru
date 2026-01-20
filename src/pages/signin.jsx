@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import bcrypt from 'bcryptjs';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_TIME_MS = 15 * 60 * 1000; // 15 minutes
@@ -30,12 +29,10 @@ const SignIn = () => {
         .eq('email', emailNormalized)
         .maybeSingle();
 
-      // Generic error (prevents email probing)
       if (queryError || !adminUser) {
         throw new Error('Invalid email or password');
       }
 
-      // Check if account is locked
       if (
         adminUser.locked_until &&
         new Date(adminUser.locked_until).getTime() > Date.now()
@@ -43,13 +40,8 @@ const SignIn = () => {
         throw new Error('Too many attempts. Try again later.');
       }
 
-      // Compare bcrypt password
-      const passwordMatch = await bcrypt.compare(
-        password,
-        adminUser.password
-      );
-
-      if (!passwordMatch) {
+      // Direct password comparison
+      if (password !== adminUser.password) {
         const attempts = (adminUser.failed_attempts || 0) + 1;
 
         const updates = {
@@ -70,7 +62,6 @@ const SignIn = () => {
         throw new Error('Invalid email or password');
       }
 
-      // Reset failed attempts on success
       await supabase
         .from('admin_users')
         .update({
@@ -79,14 +70,14 @@ const SignIn = () => {
         })
         .eq('id', adminUser.id);
 
-      // Create session
       const sessionData = {
         user: {
           id: adminUser.id,
           email: adminUser.email,
-          name: adminUser.name,
+          full_name: adminUser.full_name,
+          role: adminUser.role,
         },
-        expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24h
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000,
       };
 
       localStorage.setItem('admin_session', JSON.stringify(sessionData));
@@ -131,7 +122,6 @@ const SignIn = () => {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow-sm border rounded-md border-gray-200 sm:rounded-lg sm:px-10">
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email address
@@ -151,7 +141,6 @@ const SignIn = () => {
                 </div>
               </div>
 
-              {/* Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Password
@@ -187,7 +176,7 @@ const SignIn = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center gap-2 py-2.5 text-white bg-[#478100] rounded-md disabled:opacity-50"
+                className="w-full flex justify-center items-center gap-2 py-2.5 text-white bg-[#478100] rounded-md disabled:opacity-50 hover:bg-[#3a6800] transition-colors"
               >
                 {loading ? 'Signing in...' : <><LogIn size={18} /> Sign in</>}
               </button>

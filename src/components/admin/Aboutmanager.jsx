@@ -34,7 +34,6 @@ const AboutManager = ({ showSuccess }) => {
       if (error) throw error;
       if (data) setAboutData(data);
     } catch (error) {
-      console.error('Error fetching about data:', error);
       setError(`Error loading about data: ${error.message}`);
     } finally {
       setLoading(false);
@@ -53,7 +52,6 @@ const AboutManager = ({ showSuccess }) => {
       if (error) throw error;
       if (data) setStats(data);
     } catch (error) {
-      console.error('Error fetching stats:', error);
       setError(`Error loading stats: ${error.message}`);
     } finally {
       setLoading(false);
@@ -79,7 +77,6 @@ const AboutManager = ({ showSuccess }) => {
       setEditing(null);
       await fetchAboutData();
     } catch (error) {
-      console.error('Error saving about:', error);
       setError(`Error saving: ${error.message}`);
     } finally {
       setLoading(false);
@@ -106,7 +103,6 @@ const AboutManager = ({ showSuccess }) => {
       setEditing(null);
       await fetchStats();
     } catch (error) {
-      console.error('Error saving stat:', error);
       setError(`Error saving: ${error.message}`);
     } finally {
       setLoading(false);

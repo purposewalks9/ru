@@ -32,8 +32,7 @@ const CTAManager = ({ showSuccess }) => {
       if (error) throw error;
       if (data) setCtaData(data);
     } catch (error) {
-      console.error('Error fetching CTA data:', error);
-      setError(`Error loading CTA data: ${error.message}`);
+      setError('Error loading CTA data');
     } finally {
       setLoading(false);
     }
@@ -63,8 +62,7 @@ const CTAManager = ({ showSuccess }) => {
       setEditing(false);
       await fetchCtaData();
     } catch (error) {
-      console.error('Error saving:', error);
-      setError(`Error saving CTA: ${error.message}`);
+      setError('Error saving CTA data');
     } finally {
       setLoading(false);
     }

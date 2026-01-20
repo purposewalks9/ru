@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { User, Mail, Shield, Lock, Eye, EyeOff, Save, X, AlertCircle } from 'lucide-react';
-import bcrypt from 'bcryptjs';
-
 
 const Profile = ({ showSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -154,35 +152,18 @@ const Profile = ({ showSuccess }) => {
 
       if (fetchError) throw fetchError;
 
-      // Check if password exists and starts with bcrypt prefix
-      if (!userData.password || !userData.password.startsWith('$2')) {
-        // Password is not hashed - treat as plain text for first-time fix
-        if (passwordData.currentPassword !== userData.password) {
-          setError('Current password is incorrect');
-          setLoading(false);
-          return;
-        }
-      } else {
-        // Password is hashed - use bcrypt compare
-        const isValid = await bcrypt.compare(
-          passwordData.currentPassword,
-          userData.password
-        );
-
-        if (!isValid) {
-          setError('Current password is incorrect');
-          setLoading(false);
-          return;
-        }
+      // Direct password comparison
+      if (passwordData.currentPassword !== userData.password) {
+        setError('Current password is incorrect');
+        setLoading(false);
+        return;
       }
 
-      // Hash and store new password
-      const hashedPassword = await bcrypt.hash(passwordData.newPassword, 12);
-
+      // Store plain text password
       const { error: updateError } = await supabase
         .from('admin_users')
         .update({
-          password: hashedPassword,
+          password: passwordData.newPassword,
           updated_at: new Date().toISOString(),
           failed_attempts: 0,
           locked_until: null

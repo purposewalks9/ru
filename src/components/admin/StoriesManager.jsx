@@ -55,8 +55,7 @@ const StoriesManager = ({ showSuccess }) => {
         setStoryData(newData);
       }
     } catch (error) {
-      console.error('Error fetching story:', error);
-      setError(`Error loading data: ${error.message}`);
+      setError('Error loading stories data');
     } finally {
       setLoading(false);
     }
@@ -77,8 +76,7 @@ const StoriesManager = ({ showSuccess }) => {
       setEditing(null);
       fetchStory();
     } catch (error) {
-      console.error('Error saving:', error);
-      setError(`Error saving: ${error.message}`);
+      setError('Error saving story data');
     } finally {
       setLoading(false);
     }

@@ -39,8 +39,7 @@ const CareerManager = ({ showSuccess }) => {
       if (error) throw error;
       if (data) setCareerData(data);
     } catch (error) {
-      console.error('Error fetching career data:', error);
-      setError(`Error loading data: ${error.message}`);
+      setError('Error loading career data');
     } finally {
       setLoading(false);
     }
@@ -57,8 +56,7 @@ const CareerManager = ({ showSuccess }) => {
       if (error) throw error;
       if (data) setFaqs(data);
     } catch (error) {
-      console.error('Error fetching FAQs:', error);
-      setError(`Error loading FAQs: ${error.message}`);
+      setError('Error loading FAQs');
     } finally {
       setLoading(false);
     }
@@ -88,8 +86,7 @@ const CareerManager = ({ showSuccess }) => {
       setEditing(null);
       await fetchCareerData();
     } catch (error) {
-      console.error('Error saving:', error);
-      setError(`Error saving: ${error.message}`);
+      setError('Error saving career data');
     } finally {
       setLoading(false);
     }
@@ -116,8 +113,7 @@ const CareerManager = ({ showSuccess }) => {
       setEditing(null);
       await fetchFAQs();
     } catch (error) {
-      console.error('Error saving:', error);
-      setError(`Error saving: ${error.message}`);
+      setError('Error saving FAQ');
     } finally {
       setLoading(false);
     }
@@ -142,8 +138,7 @@ const CareerManager = ({ showSuccess }) => {
       showSuccess('FAQ added successfully!');
       await fetchFAQs();
     } catch (error) {
-      console.error('Error adding FAQ:', error);
-      setError(`Error adding FAQ: ${error.message}`);
+      setError('Error adding FAQ');
     } finally {
       setLoading(false);
     }
@@ -163,8 +158,7 @@ const CareerManager = ({ showSuccess }) => {
       showSuccess(`${itemToDelete.name} deleted successfully!`);
       await fetchFAQs();
     } catch (error) {
-      console.error('Error deleting FAQ:', error);
-      setError(`Error deleting FAQ: ${error.message}`);
+      setError('Error deleting FAQ');
     } finally {
       setLoading(false);
       setShowDeleteModal(false);
