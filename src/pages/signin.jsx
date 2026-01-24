@@ -90,18 +90,19 @@ const SignIn = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-white flex flex-col justify-center xl:py-48 lg:py-32 md:py-24 py-12">
-      <div
-        style={{
-          backgroundImage:
-            "url('https://res.cloudinary.com/do4b0rrte/image/upload/v1768055520/Rectangle_34_wtd3sg.png')",
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-        }}
-        className="min-h-screen relative py-16 px-4"
-      >
+
+   return (
+  <div className="bg-white flex flex-col justify-center xl:py-48 lg:py-32 md:py-24 py-12 overflow-hidden">
+    <div
+      style={{
+        backgroundImage:
+          "url('https://res.cloudinary.com/do4b0rrte/image/upload/v1768055520/Rectangle_34_wtd3sg.png')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+      }}
+      className="min-h-screen relative py-16 px-4 overflow-hidden"
+    >
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center mb-8">
             <img

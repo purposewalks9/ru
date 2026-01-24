@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Edit3, Save, X, AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { Edit3, Save, X, AlertCircle, Plus, Trash2, ImageIcon } from 'lucide-react';
 
 const FooterManager = ({ showSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -8,7 +8,6 @@ const FooterManager = ({ showSuccess }) => {
   const [socialLinks, setSocialLinks] = useState([]);
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     fetchFooterData();
     fetchSocialLinks();
@@ -42,7 +41,8 @@ const FooterManager = ({ showSuccess }) => {
             location: '',
             phone: '',
             email: '',
-            copyright_text: ''
+            copyright_text: '',
+            logo_url: ''
           }])
           .select()
           .single();
@@ -70,6 +70,28 @@ const FooterManager = ({ showSuccess }) => {
     } catch (error) {
       console.error('Error fetching social links:', error);
       setError(`Error loading social links: ${error.message}`);
+    }
+  };
+
+  const handleSaveLogo = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase
+        .from('footer')
+        .update({ logo_url: footerData.logo_url })
+        .eq('id', footerData.id);
+
+      if (error) throw error;
+
+      showSuccess('Logo URL updated successfully!');
+      setEditing(null);
+      fetchFooterData();
+    } catch (error) {
+      console.error('Error saving logo:', error);
+      setError(`Error saving logo: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -205,6 +227,91 @@ const FooterManager = ({ showSuccess }) => {
           </div>
         </div>
       )}
+
+      {/* Logo URL Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-900">Footer Logo</h3>
+            {editing === 'logo' ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSaveLogo}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 text-sm font-medium"
+                  disabled={loading}
+                >
+                  <Save size={16} />
+                  {loading ? 'Saving...' : 'Save'}
+                </button>
+                <button
+                  onClick={() => { setEditing(null); fetchFooterData(); }}
+                  className="p-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setEditing('logo')}
+                className="flex items-center gap-2 px-4 py-2 border border-gray-600 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+              >
+                <Edit3 size={16} />
+                Edit
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="flex items-start gap-6">
+            {footerData.logo_url ? (
+              <div className="flex-shrink-0">
+                <div className="w-40 h-40 border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+                  <img 
+                    src={footerData.logo_url} 
+                    alt="Footer Logo" 
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="flex-shrink-0 w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                <ImageIcon className="w-12 h-12 text-gray-400" />
+              </div>
+            )}
+            
+            <div className="flex-1">
+              {editing === 'logo' ? (
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Logo URL
+                  </label>
+                  <input
+                    type="url"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-sm"
+                    value={footerData.logo_url || ''}
+                    onChange={e => updateFooterField('logo_url', e.target.value)}
+                    placeholder="https://res.cloudinary.com/your-cloud/image/upload/..."
+                  />
+                  <p className="text-xs text-gray-500">
+                    Paste your Cloudinary image URL here
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Logo URL</p>
+                  {footerData.logo_url ? (
+                    <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded border border-gray-200 break-all">
+                      {footerData.logo_url}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No logo URL set</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Footer Information */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">

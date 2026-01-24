@@ -65,7 +65,7 @@ export default function Footer() {
           <div>
             <div className="md:w-20 w-20 h-auto">
               <img 
-                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768088037/Frame_2147226388_qcr7fp.png" 
+                src={footerData?.logo_url}
                 alt="RWU Inc. Logo" 
                 className="w-full h-auto object-cover" 
               />

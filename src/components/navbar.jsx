@@ -1,15 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const [footerData, setFooterData] = useState(null);
+
+
+
 
   // Close mobile menu when route changes
   useEffect(() => {
+    fetchFooterData();
     setIsOpen(false);
   }, [location.pathname]);
+
+   const fetchFooterData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('footer')
+          .select('*')
+          .limit(1)
+          .maybeSingle();
+  
+        if (error) throw error;
+        if (data) setFooterData(data);
+      } catch (error) {
+        console.error('Error fetching footer data:', error);
+      }
+    };
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {
@@ -42,7 +63,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0">
               <img 
-                src="https://res.cloudinary.com/do4b0rrte/image/upload/v1768088037/Frame_2147226388_qcr7fp.png" 
+                src={footerData?.logo_url}
                 alt="RWU Inc. Logo" 
                 className="h-10 w-auto" 
               />
