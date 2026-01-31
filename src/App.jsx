@@ -11,6 +11,7 @@ import PressAwards from "./pages/press";
 import Admin from "./pages/admin";
 import ProtectedRoute from "./context/protected";
 import SignIn from "./pages/signin";
+import RecruitPage from "./pages/Recruit";
 
 function App() {
   return (
@@ -25,10 +26,12 @@ function App() {
           <Route path="/career" element={<Career />} />
           <Route path="/team" element={<TeamSection />} />
           <Route path="/press" element={<PressAwards />} />
+          <Route path="/recruit" element={<RecruitPage />} />
         </Route>
 
         {/* AUTH — NO NAVBAR */}
         <Route path="/login" element={<SignIn />} />
+        
 
         {/* ADMIN — NO NAVBAR */}
         <Route

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Plus, Trash2, Edit3, Briefcase, MapPin, Clock, Save, X, Building2, AlertCircle, DollarSign, Calendar } from 'lucide-react';
+import { Plus, Trash2, Edit3, Briefcase, MapPin, Clock, Save, X, Building2, AlertCircle, DollarSign, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const JobsManager = ({ showSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -8,6 +8,7 @@ const JobsManager = ({ showSuccess }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ show: false, jobId: null, jobTitle: '' });
   const [formData, setFormData] = useState({ 
     title: '', 
     location: '', 
@@ -18,6 +19,10 @@ const JobsManager = ({ showSuccess }) => {
     time_type: 'Full-time',
     badge: 'HIRING'
   });
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [jobsPerPage] = useState(5);
 
   useEffect(() => {
     fetchJobs();
@@ -95,20 +100,31 @@ const JobsManager = ({ showSuccess }) => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this job posting?')) return;
-    
+  const openDeleteModal = (job) => {
+    setDeleteModal({
+      show: true,
+      jobId: job.id,
+      jobTitle: job.title
+    });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({ show: false, jobId: null, jobTitle: '' });
+  };
+
+  const confirmDelete = async () => {
     setLoading(true);
     setError(null);
     try {
       const { error } = await supabase
         .from('jobs')
         .delete()
-        .eq('id', id);
+        .eq('id', deleteModal.jobId);
 
       if (error) throw error;
       
       showSuccess('Job deleted successfully!');
+      closeDeleteModal();
       await fetchJobs();
     } catch (error) {
       console.error('Error deleting job:', error);
@@ -146,8 +162,41 @@ const JobsManager = ({ showSuccess }) => {
       badge: job.badge || 'HIRING'
     });
     setIsAdding(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Scroll to top after a brief delay to ensure form is rendered
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
+
+  // Calculate pagination
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+
+  // Pagination handlers
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Generate page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
 
   if (loading && jobs.length === 0) {
     return (
@@ -381,7 +430,7 @@ const JobsManager = ({ showSuccess }) => {
       )}
 
       <div className="space-y-4">
-        {jobs.length === 0 ? (
+        {currentJobs.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border-2 border-dashed border-gray-200 p-16 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4">
               <Briefcase size={32} className="text-gray-300" />
@@ -390,7 +439,7 @@ const JobsManager = ({ showSuccess }) => {
             <p className="text-sm text-gray-400 mb-6">Click "Add Position" to create your first job posting</p>
           </div>
         ) : (
-          jobs.map(job => (
+          currentJobs.map(job => (
             <div 
               key={job.id} 
               className="group bg-white rounded-lg shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-200 overflow-hidden"
@@ -442,7 +491,7 @@ const JobsManager = ({ showSuccess }) => {
                     </div>
                   </div>
 
-                  <div className="flex gap-2  transition-opacity">
+                  <div className="flex gap-2 transition-opacity">
                     <button 
                       onClick={() => startEdit(job)}
                       className="p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -451,8 +500,8 @@ const JobsManager = ({ showSuccess }) => {
                       <Edit3 size={18} />
                     </button>
                     <button 
-                      onClick={() => handleDelete(job.id)}
-                      className="p-2.5  text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      onClick={() => openDeleteModal(job)}
+                      className="p-2.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       title="Delete job"
                     >
                       <Trash2 size={18} />
@@ -464,6 +513,87 @@ const JobsManager = ({ showSuccess }) => {
           ))
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {jobs.length > jobsPerPage && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-600">
+              Showing <span className="font-semibold">{indexOfFirstJob + 1}</span> to{' '}
+              <span className="font-semibold">
+                {Math.min(indexOfLastJob, jobs.length)}
+              </span>{' '}
+              of <span className="font-semibold">{jobs.length}</span> jobs
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-lg border border-gray-300 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                <ChevronLeft size={18} />
+              </button>
+              
+              <div className="flex gap-1">
+                {pageNumbers.map(number => (
+                  <button
+                    key={number}
+                    onClick={() => goToPage(number)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium ${currentPage === number ? 'bg-gray-800 text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    {number}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-lg border border-gray-300 ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModal.show && (
+        <div className="fixed inset-0 bg-gray-700/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800">
+                Confirm Delete
+              </h3>
+            </div>
+            
+            <div className="p-6">
+              <p className="text-gray-700 mb-6">
+                {`Are you sure you want to delete "${deleteModal.jobTitle}"? This action cannot be undone.`}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={closeDeleteModal}
+                  disabled={loading}
+                  className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors w-full sm:w-1/2 font-medium border border-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={loading}
+                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full sm:w-1/2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Deleting...' : 'Yes, Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

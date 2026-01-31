@@ -19,6 +19,7 @@ import {
 import EmailManager from '../components/admin/Emailmanager.jsx';
 import AboutManager from '../components/admin/Aboutmanager.jsx';
 import FooterManager from '../components/admin/FooterMnanger.jsx';
+import RecruitmentApplications from '../components/admin/ApplicationManager.jsx';
 
 const PlaceholderEditor = ({ title }) => (
   <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
@@ -104,6 +105,8 @@ const AdminPortal = () => {
                     return <JobsManager showSuccess={showSuccess} />;
                 case 'profile':
                     return <Profile showSuccess={showSuccess} />;
+                case 'applications':
+                    return <RecruitmentApplications showSuccess={showSuccess} />;
                 case 'press':
                     return <PressAwardsManager showSuccess={showSuccess}/>;
                 case 'about':

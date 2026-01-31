@@ -36,7 +36,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
         { id: 'stories', label: 'Stories', icon: BookOpen },
         { id: 'team', label: 'Team', icon: Users },
         { id: 'career', label: 'Career', icon: Briefcase },
-        { id: 'about', label: 'About', icon: Info },
+        { id: 'about', label: 'About', icon: Info }
       ]
     },
     {
@@ -45,7 +45,8 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
         { id: 'cta', label: 'Call to Action', icon: Megaphone },
         { id: 'jobs', label: 'Job Board', icon: Briefcase },
         { id: 'mail', label: 'Send Mail', icon: Send },
-        { id: 'footer', label: 'Footer', icon: MessageSquare }
+        { id: 'footer', label: 'Footer', icon: MessageSquare },
+        { id: 'applications', label: 'Applications', icon: FileText }
       ]
     }
   ];

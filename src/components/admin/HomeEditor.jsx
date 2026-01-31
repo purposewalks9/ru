@@ -68,6 +68,7 @@ const HomeEditor = ({ showSuccess }) => {
     try {
       const updateData = {
         hero_title: homeData.hero_title,
+        hero_subtitle: homeData.hero_subtitle,
         hero_description: homeData.hero_description,
         hero_image_url: homeData.hero_image_url,
       };
@@ -254,6 +255,19 @@ const HomeEditor = ({ showSuccess }) => {
                     value={homeData?.hero_title || ''}
                     onChange={e => updateHomeField('hero_title', e.target.value)}
                     placeholder="Enter hero title..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                    Title
+                  </label>
+                  <input
+                    disabled={editing !== 'hero'}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-gray-600 focus:ring-1 focus:ring-gray-300 outline-none text-sm text-gray-900 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    value={homeData?.hero_subtitle || ''}
+                    onChange={e => updateHomeField('hero_subtitle', e.target.value)}
+                    placeholder="Enter hero subtitle..."
                   />
                 </div>
 
