@@ -298,9 +298,9 @@ const RecruitPage = () => {
                         onChange={handleInputChange}
                         required
                         disabled={submitting}
-                        className="block w-full pl-10 py-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-[#478100] appearance-none"
+                        className="block w-full pl-10 py-2.5 border border-slate-300 text-gray-500 rounded-md focus:ring-2 focus:ring-[#478100] appearance-none"
                       >
-                        <option value="">Select Vertical</option>
+                        <option  value="">Select Industry</option>
                         {industryOptions.map((opt) => (
                           <option key={opt} value={opt}>
                             {opt}
