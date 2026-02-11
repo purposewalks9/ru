@@ -188,6 +188,14 @@ const EmailManager = ({ showSuccess }) => {
     setShowDeleteModal(false);
     setItemToDelete({ id: null, type: '', name: '' });
     try {
+      // Automatically reset the batch before sending
+      const { error: resetError } = await supabase
+        .from('batch_emails')
+        .update({ status: 'pending', sent_at: null })
+        .eq('batch_id', sendConfig.batch_id);
+      
+      if (resetError) throw resetError;
+
       // Use Vite env vars — supabase.supabaseUrl is not a public property of the JS client
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -570,7 +578,7 @@ const EmailManager = ({ showSuccess }) => {
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null;
 
-    // FIX 2: red confirm button only for actual deletes, not send confirmation
+    // Different button colors for different actions
     const isDelete = itemToDelete.type === 'batch' || itemToDelete.type === 'template';
 
     return (
@@ -596,7 +604,7 @@ const EmailManager = ({ showSuccess }) => {
                 }}
                 className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors w-full sm:w-1/2 font-medium border border-gray-300"
               >
-                No
+                Cancel
               </button>
               <button
                 onClick={confirmDelete}
@@ -606,7 +614,7 @@ const EmailManager = ({ showSuccess }) => {
                     : 'bg-gray-800 hover:bg-gray-900'
                 }`}
               >
-                Yes, {itemToDelete.type === 'send_confirmation' ? 'Send' : 'Delete'}
+                {itemToDelete.type === 'send_confirmation' ? 'Yes, Send' : 'Yes, Delete'}
               </button>
             </div>
           </div>
