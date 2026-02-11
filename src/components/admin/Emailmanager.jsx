@@ -14,18 +14,12 @@ const EmailManager = ({ showSuccess }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState({ id: null, type: '', name: '' });
 
-  // Batch creation state
   const [newBatch, setNewBatch] = useState({ name: '', emails: '' });
   const [selectedFile, setSelectedFile] = useState(null);
-
-  // Template state
   const [newTemplate, setNewTemplate] = useState({ brevo_id: '', name: '', description: '' });
-
-  // Send email state
   const [sendConfig, setSendConfig] = useState({ batch_id: '', template_id: '' });
   const [sendRuns, setSendRuns] = useState([]);
 
-  // Clear error after 5 seconds
   useEffect(() => {
     if (errorMessage) {
       const timer = setTimeout(() => setErrorMessage(''), 5000);
@@ -46,9 +40,7 @@ const EmailManager = ({ showSuccess }) => {
         .select('id, name, total_emails, created_at')
         .eq('is_deleted', false)
         .order('created_at', { ascending: false });
-      
       if (error) throw error;
-      
       setBatches(data || []);
     } catch (error) {
       console.error('Error loading batches:', error);
@@ -63,9 +55,7 @@ const EmailManager = ({ showSuccess }) => {
         .select('*')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
-      
       if (error) throw error;
-      
       setTemplates(data || []);
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -80,9 +70,7 @@ const EmailManager = ({ showSuccess }) => {
         .select('*')
         .order('started_at', { ascending: false })
         .limit(20);
-      
       if (error) throw error;
-      
       setSendRuns(data || []);
     } catch (error) {
       console.error('Error loading send runs:', error);
@@ -95,7 +83,6 @@ const EmailManager = ({ showSuccess }) => {
       setErrorMessage('Please enter a batch name');
       return;
     }
-
     setLoading(true);
     setErrorMessage('');
     try {
@@ -103,33 +90,26 @@ const EmailManager = ({ showSuccess }) => {
         .split(/[\n,]/)
         .map(e => e.trim())
         .filter(e => e.includes('@'));
-
       if (emails.length === 0) {
         setErrorMessage('No valid email addresses found');
         setLoading(false);
         return;
       }
-
       const { data: batch, error: batchError } = await supabase
         .from('email_batches')
         .insert({ name: newBatch.name })
         .select()
         .single();
-
       if (batchError) throw batchError;
-
       const emailRecords = emails.map(email => ({
         batch_id: batch.id,
         email,
         status: 'pending'
       }));
-
       const { error: emailsError } = await supabase
         .from('batch_emails')
         .insert(emailRecords);
-
       if (emailsError) throw emailsError;
-
       showSuccess(`Batch "${newBatch.name}" created with ${emails.length} emails`);
       setNewBatch({ name: '', emails: '' });
       setShowModal(false);
@@ -148,8 +128,6 @@ const EmailManager = ({ showSuccess }) => {
       reader.onload = (event) => {
         const text = event.target.result;
         const lines = text.split('\n');
-        
-        // Extract emails from first column, skip header if present
         const emails = lines
           .map(line => {
             const parts = line.split(',');
@@ -157,7 +135,6 @@ const EmailManager = ({ showSuccess }) => {
           })
           .filter(e => e.includes('@'))
           .join('\n');
-        
         setNewBatch({ ...newBatch, emails });
       };
       reader.readAsText(file);
@@ -169,7 +146,6 @@ const EmailManager = ({ showSuccess }) => {
       setErrorMessage('Please enter template ID and name');
       return;
     }
-
     setLoading(true);
     setErrorMessage('');
     try {
@@ -180,9 +156,7 @@ const EmailManager = ({ showSuccess }) => {
           name: newTemplate.name,
           description: newTemplate.description
         });
-
       if (error) throw error;
-
       showSuccess('Brevo template reference saved');
       setNewTemplate({ brevo_id: '', name: '', description: '' });
       setShowModal(false);
@@ -199,7 +173,6 @@ const EmailManager = ({ showSuccess }) => {
       setErrorMessage('Please select both batch and template');
       return;
     }
-
     setShowDeleteModal(true);
     setItemToDelete({ 
       id: 'send_confirmation', 
@@ -211,13 +184,14 @@ const EmailManager = ({ showSuccess }) => {
   const confirmSendEmail = async () => {
     setLoading(true);
     setErrorMessage('');
+    // Close modal immediately so UI doesn't feel frozen
+    setShowDeleteModal(false);
+    setItemToDelete({ id: null, type: '', name: '' });
     try {
-      // Get Supabase config from your supabase client
-      const supabaseUrl = supabase.supabaseUrl;
-      const supabaseKey = supabase.supabaseKey;
-      
+      // Use Vite env vars — supabase.supabaseUrl is not a public property of the JS client
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       const functionUrl = `${supabaseUrl}/functions/v1/send-bulk-email`;
-      
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
@@ -229,25 +203,20 @@ const EmailManager = ({ showSuccess }) => {
           template_id: sendConfig.template_id
         })
       });
-
       const result = await response.json();
-
       if (!response.ok) {
         throw new Error(result.error || 'Failed to send emails');
       }
-
       showSuccess('Email campaign initiated! Check the History tab for progress.');
       setSendConfig({ batch_id: '', template_id: '' });
-      setShowDeleteModal(false);
-      
-      setTimeout(() => {
-        loadSendRuns();
-      }, 1000);
+      setTimeout(() => { loadSendRuns(); }, 1000);
     } catch (error) {
       console.error('Error sending emails:', error);
       setErrorMessage(`Error sending emails: ${error.message}`);
+    } finally {
+      // finally guarantees loading always resets no matter what
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDeleteBatch = async (id, name) => {
@@ -267,9 +236,7 @@ const EmailManager = ({ showSuccess }) => {
           .from('email_batches')
           .update({ is_deleted: true })
           .eq('id', itemToDelete.id);
-
         if (error) throw error;
-
         showSuccess('Batch deleted successfully');
         loadBatches();
       } else if (itemToDelete.type === 'template') {
@@ -277,16 +244,13 @@ const EmailManager = ({ showSuccess }) => {
           .from('brevo_templates')
           .delete()
           .eq('id', itemToDelete.id);
-
         if (error) throw error;
-
         showSuccess('Template deleted successfully');
         loadTemplates();
       } else if (itemToDelete.type === 'send_confirmation') {
         await confirmSendEmail();
         return;
       }
-      
       setShowDeleteModal(false);
       setItemToDelete({ id: null, type: '', name: '' });
     } catch (error) {
@@ -308,10 +272,9 @@ const EmailManager = ({ showSuccess }) => {
           New Batch
         </button>
       </div>
-
       {batches.length === 0 ? (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 text-center">
-          <Users className="mx-auto text-gray-400 mb-3" size={36} md:size={48} />
+          <Users className="mx-auto text-gray-400 mb-3" size={36} />
           <p className="text-gray-600">No batches yet. Create your first batch to get started!</p>
         </div>
       ) : (
@@ -354,20 +317,18 @@ const EmailManager = ({ showSuccess }) => {
           Add Template
         </button>
       </div>
-
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 md:p-4 mb-4">
         <div className="flex gap-2">
-          <AlertCircle className="text-gray-600 flex-shrink-0 mt-0.5" size={18} md:size={20} />
+          <AlertCircle className="text-gray-600 flex-shrink-0 mt-0.5" size={18} />
           <div className="text-sm text-gray-800">
             <p className="font-medium">Templates are managed in Brevo</p>
             <p className="mt-1">Create and design your email templates in your Brevo dashboard, then reference them here by ID.</p>
           </div>
         </div>
       </div>
-
       {templates.length === 0 ? (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 text-center">
-          <Mail className="mx-auto text-gray-400 mb-3" size={36} md:size={48} />
+          <Mail className="mx-auto text-gray-400 mb-3" size={36} />
           <p className="text-gray-600">No templates yet. Add your first Brevo template reference!</p>
         </div>
       ) : (
@@ -402,7 +363,6 @@ const EmailManager = ({ showSuccess }) => {
   const renderSendView = () => (
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-gray-800">Send Email Campaign</h2>
-
       <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Select Batch</label>
@@ -419,7 +379,6 @@ const EmailManager = ({ showSuccess }) => {
             ))}
           </select>
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Select Template</label>
           <select
@@ -435,7 +394,6 @@ const EmailManager = ({ showSuccess }) => {
             ))}
           </select>
         </div>
-
         <button
           onClick={handleSendEmail}
           disabled={!sendConfig.batch_id || !sendConfig.template_id || loading}
@@ -451,10 +409,9 @@ const EmailManager = ({ showSuccess }) => {
   const renderHistoryView = () => (
     <div className="space-y-4">
       <h2 className="text-xl font-bold text-gray-800">Send History</h2>
-
       {sendRuns.length === 0 ? (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 text-center">
-          <Clock className="mx-auto text-gray-400 mb-3" size={36} md:size={48} />
+          <Clock className="mx-auto text-gray-400 mb-3" size={36} />
           <p className="text-gray-600">No campaigns sent yet. Send your first campaign to see it here!</p>
         </div>
       ) : (
@@ -500,7 +457,6 @@ const EmailManager = ({ showSuccess }) => {
 
   const renderModal = () => {
     if (!showModal) return null;
-
     return (
       <div className="fixed inset-0 bg-gray-700/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
@@ -509,7 +465,6 @@ const EmailManager = ({ showSuccess }) => {
               {modalType === 'batch' ? 'Create New Batch' : 'Add Brevo Template'}
             </h3>
           </div>
-
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
             {modalType === 'batch' ? (
               <>
@@ -523,7 +478,6 @@ const EmailManager = ({ showSuccess }) => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Upload CSV</label>
                   <div className="flex items-center gap-2">
@@ -536,7 +490,6 @@ const EmailManager = ({ showSuccess }) => {
                   </div>
                   <p className="text-xs text-gray-500 mt-1">CSV should have email addresses in the first column</p>
                 </div>
-
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-300"></div>
@@ -545,7 +498,6 @@ const EmailManager = ({ showSuccess }) => {
                     <span className="px-2 bg-white text-gray-500">OR</span>
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Paste Emails</label>
                   <textarea
@@ -572,7 +524,6 @@ const EmailManager = ({ showSuccess }) => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Template Name</label>
                   <input
@@ -583,7 +534,6 @@ const EmailManager = ({ showSuccess }) => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-500"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                   <textarea
@@ -597,7 +547,6 @@ const EmailManager = ({ showSuccess }) => {
               </>
             )}
           </div>
-
           <div className="p-4 md:p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end gap-3">
             <button
               onClick={() => setShowModal(false)}
@@ -621,6 +570,9 @@ const EmailManager = ({ showSuccess }) => {
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null;
 
+    // FIX 2: red confirm button only for actual deletes, not send confirmation
+    const isDelete = itemToDelete.type === 'batch' || itemToDelete.type === 'template';
+
     return (
       <div className="fixed inset-0 bg-gray-700/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
         <div className="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-2xl">
@@ -629,7 +581,6 @@ const EmailManager = ({ showSuccess }) => {
               {itemToDelete.type === 'send_confirmation' ? 'Confirm Send' : 'Confirm Delete'}
             </h3>
           </div>
-          
           <div className="p-6">
             <p className="text-gray-700 mb-6">
               {itemToDelete.type === 'send_confirmation' 
@@ -637,7 +588,6 @@ const EmailManager = ({ showSuccess }) => {
                 : `Are you sure you want to delete "${itemToDelete.name}"? This action cannot be undone.`
               }
             </p>
-            
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => {
@@ -650,7 +600,11 @@ const EmailManager = ({ showSuccess }) => {
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full sm:w-1/2 font-medium"
+                className={`px-6 py-3 text-white rounded-lg transition-colors w-full sm:w-1/2 font-medium ${
+                  isDelete
+                    ? 'bg-red-600 hover:bg-red-700'
+                    : 'bg-gray-800 hover:bg-gray-900'
+                }`}
               >
                 Yes, {itemToDelete.type === 'send_confirmation' ? 'Send' : 'Delete'}
               </button>
@@ -670,7 +624,6 @@ const EmailManager = ({ showSuccess }) => {
 
   return (
     <div className="space-y-6">
-      {/* Error Message Display */}
       {errorMessage && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex gap-2">
@@ -682,18 +635,15 @@ const EmailManager = ({ showSuccess }) => {
           </div>
         </div>
       )}
-
-      {/* Mobile menu button */}
       <div className="sm:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`flex items-center gap-2 px-4 py-2 ${mobileMenuOpen ? "border border-gray-600 text-gray-800" : "border border-gray-600 text-gray-800"} rounded-lg mb-4 w-full justify-center font-medium` }
+          className="flex items-center gap-2 px-4 py-2 border border-gray-600 text-gray-800 rounded-lg mb-4 w-full justify-center font-medium"
         >
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           {mobileMenuOpen ? 'Close Menu' : 'Navigation'}
         </button>
       </div>
-
       <div className={`flex flex-col sm:flex-row gap-2 border-b border-gray-200 overflow-x-auto ${
         mobileMenuOpen ? 'flex' : 'hidden sm:flex'
       }`}>
@@ -715,14 +665,12 @@ const EmailManager = ({ showSuccess }) => {
           </button>
         ))}
       </div>
-
       <div className="min-w-0">
         {activeView === 'batches' && renderBatchesView()}
         {activeView === 'templates' && renderTemplatesView()}
         {activeView === 'send' && renderSendView()}
         {activeView === 'history' && renderHistoryView()}
       </div>
-
       {renderModal()}
       {renderDeleteModal()}
     </div>
